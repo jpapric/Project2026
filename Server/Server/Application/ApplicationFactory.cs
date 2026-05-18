@@ -1,17 +1,32 @@
-using System.Runtime.InteropServices;
+﻿using Server.Application.DTOs;
+using Server.Domain;
 
-// In SDK-style projects such as this one, several assembly attributes that were historically
-// defined in this file are now automatically added during build and populated with
-// values defined in project properties. For details of which attributes are included
-// and how to customise this process see: https://aka.ms/assembly-info-properties
+namespace Server.Application
+{
+    public class ApplicationFactory
+    {
 
+        public static List<PlcDto> GetPlcsDtosFromDomain(List<Plc> plcs)
+        {
+            List<PlcDto> result = new List<PlcDto>();
 
-// Setting ComVisible to false makes the types in this assembly not visible to COM
-// components.  If you need to access a type in this assembly from COM, set the ComVisible
-// attribute to true on that type.
+            foreach (Plc p in plcs)
+            {
+                result.Add(GetPlcDtofromDomain(p));
+            }
 
-[assembly: ComVisible(false)]
+            return result;
+        }
 
-// The following GUID is for the ID of the typelib if this project is exposed to COM.
-
-[assembly: Guid("c4af8e71-4331-4f22-a41b-58caaf9b84c7")]
+        public static PlcDto GetPlcDtofromDomain(Plc plc)
+        {
+            return new PlcDto
+            {
+                Cpu = plc.Cpu,
+                Ip = plc.Ip,
+                Rack = plc.Rack,
+                Slot = plc.Slot
+            };
+        }
+    }
+}
