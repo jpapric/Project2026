@@ -1,10 +1,7 @@
-﻿using Server.Application.Interfaces;
-using Server.Application.Services;
-using Server.Infrastructure.Repository;
-using System.Xml.Serialization;
-using Server.Application.Interfaces;
-using Server.Application.Services;
-using Server.Infrastructure.Repository;
+﻿using System.Xml.Serialization;
+//using VIdeoStoreApp.Application.Interfaces;
+//using VIdeoStoreApp.Application.Services;
+//using VIdeoStoreApp.Infrastructure.Repository;
 
 namespace Server
 {
@@ -18,10 +15,11 @@ namespace Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+        
 
-            builder.Services.AddScoped<IServerRepository, ServerRepository>();
-            builder.Services.AddScoped<IServerService, ServerService>();
-            
+            //builder.Services.AddScoped<IVideoStoreRepository, VideoStoreRepository>();
+            //builder.Services.AddScoped<IVideoStoreService, VideoStoreService>();
+
             //Dependency injection (DI)
             var app = builder.Build();
 
