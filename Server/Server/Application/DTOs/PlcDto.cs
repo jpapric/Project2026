@@ -5,7 +5,6 @@
         public string Ip { get; set; }
         public int Rack { get; set; }
         public int Slot { get; set; }
-
         public string Cpu { get; set; }
 
         public enum CpuType
