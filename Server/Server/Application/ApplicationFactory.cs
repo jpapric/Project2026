@@ -36,29 +36,27 @@ namespace Server.Application
 
             foreach (EAF e in eafs)
             {
-                result.Add(GetEAFDtofromDomain(e));
+                result.Add(GetEAFDtoFromDomain(e));
             }
 
             return result;
         }
 
-        public static EAFDto GetEAFDtofromDomain(EAF eaf)
+        public static EAFDto GetEAFDtoFromDomain(EAF eaf)
         {
             return new EAFDto
             {
-                Load_scrap = eaf.Load_scrap,
-                Current_setpoint = eaf.Current_setpoint,
-                Tap = eaf.Tap,
-                Tap_angle = eaf.Tap_angle,
-                Reset = eaf.Reset,
-                Mass_tons = eaf.Mass_tons,
-                Temperature_C = eaf.Temperature_C,
+                Scrap_loading = eaf.Scrap_loading,
+                Tapping_active = eaf.Tapping_active,
+                Actual_tilting = eaf.Actual_tilting,
+                Material_weight = eaf.Material_weight,
+                Actual_current = eaf.Actual_current,
                 Energy_consumed = eaf.Energy_consumed,
+                Actual_temperature = eaf.Actual_temperature,
                 Furnace_overfill = eaf.Furnace_overfill,
+                Tapping_error = eaf.Tapping_error,
                 Furnace_empty = eaf.Furnace_empty,
                 Furnace_overtemperature = eaf.Furnace_overtemperature,
-                Tapping_error = eaf.Tapping_error,
-
             };
         }
     }

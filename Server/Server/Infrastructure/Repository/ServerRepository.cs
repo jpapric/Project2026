@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using System.Security.Principal;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Server.Application.Interfaces;
 using Server.Domain;
-using System.Security.Principal;
-using static Server.Domain.Belt;
 using static Server.Domain.Plc;
 
 namespace Server.Infrastructure.Repository
@@ -74,32 +73,94 @@ namespace Server.Infrastructure.Repository
 
         }
 
+        public void SetCurrent(float current)
+        {
+            
+            string query = "UPDATE L2_TO_PLC " +
+                           "SET CURRENT_SETPOINT = @current_setpoint";
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@current_setpoint", current);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+            
+        }
+
+        public EAF GetEAF()
+        {
+            try
+            {
+                EAF result = new EAF();
+                string query = @"SELECT Scrap_loading, Tapping_active, Actual_tilting, Material_weight, Actual_current, 
+                        Energy_consumed, Actual_temperature, Furnace_overfill, Tapping_error, 
+                        Furnace_empty, Furnace_overtemperature 
+                        FROM PLC_TO_L2";
+
+                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                using SqlDataReader reader = command.ExecuteReader();
+
+                if (reader.Read())
+                {
+                    bool scrap_loading = reader.GetBoolean(reader.GetOrdinal("Scrap_loading"));
+                    bool tapping_active = reader.GetBoolean(reader.GetOrdinal("Tapping_active"));
+                    float actual_tilting = reader.GetFloat(reader.GetOrdinal("Actual_tilting"));
+                    float material_weight = reader.GetFloat(reader.GetOrdinal("Material_weight"));
+                    float actual_current = reader.GetFloat(reader.GetOrdinal("Actual_current"));
+                    float energy_consumed = reader.GetFloat(reader.GetOrdinal("Energy_consumed"));
+                    float actual_temperature = reader.GetFloat(reader.GetOrdinal("Actual_temperature"));
+                    bool furnace_overfill = reader.GetBoolean(reader.GetOrdinal("Furnace_overfill"));
+                    bool tapping_error = reader.GetBoolean(reader.GetOrdinal("Tapping_error"));
+                    bool furnace_empty = reader.GetBoolean(reader.GetOrdinal("Furnace_empty"));
+                    bool furnace_overtemperature = reader.GetBoolean(reader.GetOrdinal("Furnace_overtemperature"));
+
+                    result = new EAF(scrap_loading, tapping_active, actual_tilting, material_weight, actual_current,
+                                     energy_consumed, actual_temperature, furnace_overfill, tapping_error,
+                                     furnace_empty, furnace_overtemperature);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Greška pri čitanju EAF podataka: {ex.Message}");
+            }
+        }
+
+        public float GetEnergyConsumed()
+        {
+            float energy_consumed = 0f;
+
+            try
+            {
+                string query = "SELECT ENERGY_CONSUMED FROM PLC_TO_L2";
+                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                using SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    energy_consumed = reader.GetFloat(reader.GetOrdinal("ENERGY_CONSUMED"));
+                }
+                return energy_consumed;
+            }
+            catch
+            {
+                throw new Exception("No PLC configuration found in database.");
+            }
+        }
 
         /*
         public void UpdateShearSpeed(Shear shear) {
 
         }
         */
-        public void UpdateBeltSpeed(Belt belt)
-        {
 
-            string query = "UPDATE Belt " +
-                           "SET  Speed = @speed " +
-                           "WHERE guid = @guid";
-
-            using SqlConnection connection = new SqlConnection(_connectionString);
-            using SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@speed", belt.Speed);
-            command.Parameters.AddWithValue("@guid", belt.guid);
-           
-
-
-            connection.Open();
-            command.ExecuteNonQuery();
-            connection.Close();
-
-        }
 
 
 

@@ -48,7 +48,49 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult SetCurrent([FromBody] float current)
+        {
+            try
+            {
+                _service.SetCurrent(current);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
 
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult GetEnergyConsumed()
+        {
+            try
+            {
+                float energy_consumed = _service.GetEnergyConsumed();
+                return Ok(energy_consumed);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult GetEAF()
+        {
+            try
+            {
+                EAFDto eaf = _service.GetEAF();
+                return Ok(eaf);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }
  

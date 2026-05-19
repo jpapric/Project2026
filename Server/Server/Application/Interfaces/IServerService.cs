@@ -8,6 +8,9 @@ namespace Server.Application.Interfaces
         PlcDto GetPlc();
 
         void UpdatePlc(PlcDto plcdto);
+        void SetCurrent(float current);
+        float GetEnergyConsumed();
+        EAFDto GetEAF();
 
     }
 }

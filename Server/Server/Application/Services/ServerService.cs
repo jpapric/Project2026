@@ -29,6 +29,43 @@ namespace Server.Application.Services
             _repository.UpdatePlc(plc);
         }
 
+        /*public void SetCurrent(EAFDto eafDto)
+        {
+            EAF eaf = new EAF(
+                eafDto.Scrap_loading,
+                eafDto.Tapping_active,
+                eafDto.Actual_tilting,
+                eafDto.Material_weight,
+                eafDto.Actual_current,
+                eafDto.Energy_consumed,
+                eafDto.Actual_temperature,
+                eafDto.Furnace_overfill,
+                eafDto.Tapping_error,
+                eafDto.Furnace_empty,
+                eafDto.Furnace_overtemperature
+            );
+            _repository.SetCurrent(eaf);
+        }*/
+
+        public void SetCurrent(float current)
+        {
+            _repository.SetCurrent(current);
+        }
+        public float GetEnergyConsumed()
+        {
+            float energy_consumed = _repository.GetEnergyConsumed();
+
+            return energy_consumed;
+        }
+
+        public EAFDto GetEAF()
+        {
+            EAF eaf = _repository.GetEAF();
+
+            EAFDto eafDto = ApplicationFactory.GetEAFDtoFromDomain(eaf);
+
+            return eafDto;
+        }
     }
 }
 

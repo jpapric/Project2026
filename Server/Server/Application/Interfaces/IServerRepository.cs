@@ -7,6 +7,8 @@ namespace Server.Application.Interfaces
         Plc GetPlc();
 
         void UpdatePlc(Plc plc);
-        void UpdateBeltSpeed(Belt belt);
+        void SetCurrent(float current);
+        float GetEnergyConsumed();
+        EAF GetEAF();
     }
 }
