@@ -70,6 +70,13 @@ namespace Server.Application.Services
 
             return eafDto;
         }
+        public void PostEAF(EAFDto eafDto)
+        {
+            EAF eaf = new EAF(eafDto.Scrap_loading, eafDto.Tapping_active, eafDto.Actual_tilting, eafDto.Material_weight, eafDto.Actual_current,
+                                     eafDto.Energy_consumed, eafDto.Actual_temperature, eafDto.Furnace_overfill, eafDto.Tapping_error,
+                                     eafDto.Furnace_empty, eafDto.Furnace_overtemperature);
+            _repository.PostEAF(eaf);
+        }
     }
 }
 

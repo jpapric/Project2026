@@ -105,6 +105,20 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult PostEAF([FromBody] EAFDto eaf)
+        {
+            try
+            {
+                _service.PostEAF(eaf);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }
  

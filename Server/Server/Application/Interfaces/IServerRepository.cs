@@ -11,5 +11,6 @@ namespace Server.Application.Interfaces
         void SetAngle(float angle);
         float GetEnergyConsumed();
         EAF GetEAF();
+        void PostEAF(EAF eaf);
     }
 }

@@ -148,6 +148,42 @@ namespace Server.Infrastructure.Repository
                 throw new Exception($"Greška pri čitanju EAF podataka: {ex.Message}");
             }
         }
+        public void PostEAF(EAF eaf)
+        {
+            try
+            {
+                string query = @"INSERT INTO PLC_TO_L2 
+                        (Scrap_loading, Tapping_active, Actual_tilting, Material_weight, Actual_current,
+                        Energy_consumed, Actual_temperature, Furnace_overfill, Tapping_error,
+                        Furnace_empty, Furnace_overtemperature)
+                        VALUES
+                        (@Scrap_loading, @Tapping_active, @Actual_tilting, @Material_weight, @Actual_current,
+                        @Energy_consumed, @Actual_temperature, @Furnace_overfill, @Tapping_error,
+                        @Furnace_empty, @Furnace_overtemperature)";
+
+                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlCommand command = new SqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@Scrap_loading", eaf.Scrap_loading);
+                command.Parameters.AddWithValue("@Tapping_active", eaf.Tapping_active);
+                command.Parameters.AddWithValue("@Actual_tilting", eaf.Actual_tilting);
+                command.Parameters.AddWithValue("@Material_weight", eaf.Material_weight);
+                command.Parameters.AddWithValue("@Actual_current", eaf.Actual_current);
+                command.Parameters.AddWithValue("@Energy_consumed", eaf.Energy_consumed);
+                command.Parameters.AddWithValue("@Actual_temperature", eaf.Actual_temperature);
+                command.Parameters.AddWithValue("@Furnace_overfill", eaf.Furnace_overfill);
+                command.Parameters.AddWithValue("@Tapping_error", eaf.Tapping_error);
+                command.Parameters.AddWithValue("@Furnace_empty", eaf.Furnace_empty);
+                command.Parameters.AddWithValue("@Furnace_overtemperature", eaf.Furnace_overtemperature);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Greška pri upisivanju EAF podataka: {ex.Message}");
+            }
+        }
 
         public float GetEnergyConsumed()
         {
