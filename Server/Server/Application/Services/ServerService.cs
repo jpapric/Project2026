@@ -28,6 +28,7 @@ namespace Server.Application.Services
             Plc plc = new Plc(plcdto.Cpu, plcdto.Ip, plcdto.Rack, plcdto.Slot);
             _repository.UpdatePlc(plc);
         }
+
     }
 }
 

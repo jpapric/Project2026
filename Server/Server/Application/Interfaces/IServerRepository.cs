@@ -7,5 +7,6 @@ namespace Server.Application.Interfaces
         Plc GetPlc();
 
         void UpdatePlc(Plc plc);
+        void UpdateBeltSpeed(Belt belt);
     }
 }
