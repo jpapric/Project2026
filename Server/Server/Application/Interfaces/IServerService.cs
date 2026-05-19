@@ -9,6 +9,7 @@ namespace Server.Application.Interfaces
 
         void UpdatePlc(PlcDto plcdto);
         void SetCurrent(float current);
+        void SetAngle(float angle);
         float GetEnergyConsumed();
         EAFDto GetEAF();
 

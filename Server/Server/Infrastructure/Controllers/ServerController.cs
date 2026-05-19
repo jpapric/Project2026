@@ -62,6 +62,20 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult SetAngle([FromBody] float angle)
+        {
+            try
+            {
+                _service.SetAngle(angle);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
 
         [HttpGet]
         [Route("[action]")]

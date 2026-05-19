@@ -8,6 +8,7 @@ namespace Server.Application.Interfaces
 
         void UpdatePlc(Plc plc);
         void SetCurrent(float current);
+        void SetAngle(float angle);
         float GetEnergyConsumed();
         EAF GetEAF();
     }

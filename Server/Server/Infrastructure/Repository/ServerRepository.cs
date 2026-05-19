@@ -90,6 +90,23 @@ namespace Server.Infrastructure.Repository
             
         }
 
+        public void SetAngle(float angle)
+        {
+
+            string query = "UPDATE L2_TO_PLC " +
+                           "SET TAP_ANGLE = @angle";
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@angle", angle);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+
+        }
+
         public EAF GetEAF()
         {
             try

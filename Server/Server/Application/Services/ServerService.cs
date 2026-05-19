@@ -51,6 +51,10 @@ namespace Server.Application.Services
         {
             _repository.SetCurrent(current);
         }
+        public void SetAngle(float angle)
+        {
+            _repository.SetAngle(angle);
+        }
         public float GetEnergyConsumed()
         {
             float energy_consumed = _repository.GetEnergyConsumed();
