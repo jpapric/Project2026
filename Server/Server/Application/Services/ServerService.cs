@@ -21,11 +21,13 @@ namespace Server.Application.Services
             PlcDto plcDto = ApplicationFactory.GetPlcDtofromDomain(plc);
 
             return plcDto;
+        }
 
-
-
+        public void UpdatePlc(PlcDto plcdto) 
+        {
+            Plc plc = new Plc(plcdto.Cpu, plcdto.Ip, plcdto.Rack, plcdto.Slot);
+            _repository.UpdatePlc(plc);
         }
     }
 }
-
 

@@ -34,6 +34,21 @@ namespace Server.Infrastructure.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult UpdatePlc([FromBody] PlcDto plcdto)
+        {
+            try
+            {
+                _service.UpdatePlc(plcdto);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
     }
 }
  

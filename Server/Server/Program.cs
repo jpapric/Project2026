@@ -1,10 +1,8 @@
 ﻿using Server.Application.Interfaces;
 using Server.Application.Services;
+using Server.Infrastructure.BackgroundServices;
 using Server.Infrastructure.Repository;
-using System.Xml.Serialization;
-using Server.Application.Interfaces;
-using Server.Application.Services;
-using Server.Infrastructure.Repository;
+
 
 namespace Server
 {
@@ -18,7 +16,8 @@ namespace Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-
+            
+            builder.Services.AddHostedService<PlcConnection> ();
             builder.Services.AddScoped<IServerRepository, ServerRepository>();
             builder.Services.AddScoped<IServerService, ServerService>();
             
