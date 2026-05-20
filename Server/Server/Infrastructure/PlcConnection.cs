@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
@@ -6,6 +7,7 @@ using S7.Net;
 using Server.Application.Interfaces;
 using Server.Domain;
 using System;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
@@ -101,11 +103,17 @@ namespace Server.Infrastructure.BackgroundServices
                
                     try
                     {
-          
-                        EAF furnaceData = new EAF();
+                        var    watch = System.Diagnostics.Stopwatch.StartNew();
+                   
+
+                    EAF furnaceData = new EAF();
                         _plc.ReadClass(furnaceData, 301, 0);
                         _cache.Update(furnaceData);
-
+                        using var scope = _scopeFactory.CreateScope();
+                        var repository = scope.ServiceProvider.GetRequiredService<IServerRepository>();
+                        repository.PostEAF(furnaceData);
+                        watch.Stop();
+                        _logger.LogInformation($"Sending speed {watch.ElapsedMilliseconds}");
 
                 }
                     catch (Exception ex)
