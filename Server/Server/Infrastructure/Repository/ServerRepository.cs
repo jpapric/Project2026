@@ -106,6 +106,56 @@ namespace Server.Infrastructure.Repository
             connection.Close();
 
         }
+        public void LoadScrap()
+        {
+            string query = "UPDATE L2_TO_PLC " +
+                           "SET LOAD_SCRAP = @Load_scrap";
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@Load_scrap", true);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+        public void Tap()
+        {
+            string query = "UPDATE L2_TO_PLC " +
+                           "SET TAP = @Tap";
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@Tap", true);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
+        public void Reset()
+        {
+            string query = "UPDATE L2_TO_PLC                          " +
+                           "SET LOAD_SCRAP = @Load_scrap,             " +
+                           "SET TAP = @Tap,                           " +
+                           "SET CURRENT_SETPOINT = @Current_setpoint, " +
+                           "SET TAP_ANGLE = @Tap_angle,               " +
+                           "SET RESET = @Reset                        " ;
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@Load_scrap", false);
+            command.Parameters.AddWithValue("@Tap", false);
+            command.Parameters.AddWithValue("@Current_setpoint", 0);
+            command.Parameters.AddWithValue("@Tap_angle", 0);
+            command.Parameters.AddWithValue("@Reset", true);
+
+            connection.Open();
+            command.ExecuteNonQuery();
+            connection.Close();
+        }
 
         public EAF GetEAF()
         {
@@ -207,26 +257,6 @@ namespace Server.Infrastructure.Repository
                 throw new Exception("No PLC configuration found in database.");
             }
         }
-
-        /*
-        public void UpdateShearSpeed(Shear shear) {
-
-        }
-        */
-
-
-
-
-
-        /*
-        public void UpdateShearCutLength(float cutLength)
-        {
-
-        }
-        */
-
-
-
         //public LastEvent(){};
         //public UpdateShears(){};
         //public UpdateMaterial(){};

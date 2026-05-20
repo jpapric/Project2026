@@ -119,6 +119,48 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult LoadScrap()
+        {
+            try
+            {
+                _service.LoadScrap();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult Tap()
+        {
+            try
+            {
+                _service.Tap();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult Reset()
+        {
+            try
+            {
+                _service.Reset();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }
  

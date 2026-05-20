@@ -12,5 +12,8 @@ namespace Server.Application.Interfaces
         float GetEnergyConsumed();
         EAF GetEAF();
         void PostEAF(EAF eaf);
+        void LoadScrap();
+        void Tap();
+        void Reset();
     }
 }

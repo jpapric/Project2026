@@ -77,6 +77,18 @@ namespace Server.Application.Services
                                      eafDto.Furnace_empty, eafDto.Furnace_overtemperature);
             _repository.PostEAF(eaf);
         }
+        public void LoadScrap()
+        {
+            _repository.LoadScrap();
+        }
+        public void Tap()
+        {
+            _repository.Tap();
+        }
+        public void Reset()
+        {
+            _repository.Reset();
+        }
     }
 }
 
