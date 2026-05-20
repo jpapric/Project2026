@@ -13,6 +13,6 @@ namespace Server.Application.Interfaces
         EAF GetEAF();
         void PostEAF(EAF eaf);
         void Tap();
-        void Reset();
+        Task Reset();
     }
 }

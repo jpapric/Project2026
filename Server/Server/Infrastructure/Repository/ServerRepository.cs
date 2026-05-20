@@ -144,26 +144,24 @@ namespace Server.Infrastructure.Repository
             command.ExecuteNonQuery();
             connection.Close();
         }
-        public void Reset()
+        public async Task Reset()
         {
             string query = "UPDATE L2_TO_PLC                          " +
-                           "SET LOAD_SCRAP = @Load_scrap,             " +
-                           "SET TAP = @Tap,                           " +
-                           "SET CURRENT_SETPOINT = @Current_setpoint, " +
-                           "SET TAP_ANGLE = @Tap_angle,               " +
                            "SET RESET = @Reset                        " ;
 
             using SqlConnection connection = new SqlConnection(_connectionString);
             using SqlCommand command = new SqlCommand(query, connection);
 
-            command.Parameters.AddWithValue("@Load_scrap", false);
-            command.Parameters.AddWithValue("@Tap", false);
-            command.Parameters.AddWithValue("@Current_setpoint", 0);
-            command.Parameters.AddWithValue("@Tap_angle", 0);
             command.Parameters.AddWithValue("@Reset", true);
 
             connection.Open();
             command.ExecuteNonQuery();
+
+            await Task.Delay(500);
+
+            command.Parameters["@Reset"].Value = false;
+            command.ExecuteNonQuery();
+
             connection.Close();
         }
 
