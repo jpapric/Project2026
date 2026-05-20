@@ -1,12 +1,14 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Primitives;
+using S7.Net;
 using Server.Application.Interfaces;
 using Server.Domain;
-using S7.Net;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Infrastructure.BackgroundServices
 {
@@ -15,11 +17,12 @@ namespace Server.Infrastructure.BackgroundServices
         private readonly ILogger<PlcConnection> _logger;
         private readonly IServiceScopeFactory _scopeFactory;
         private S7.Net.Plc? _plc;
-
-        public PlcConnection(ILogger<PlcConnection> logger, IServiceScopeFactory scopeFactory)
+        private readonly PlcDataCache _cache;
+        public PlcConnection(ILogger<PlcConnection> logger, IServiceScopeFactory scopeFactory, PlcDataCache cache)
         {
             _logger = logger;
             _scopeFactory = scopeFactory;
+            _cache = cache;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -80,11 +83,113 @@ namespace Server.Infrastructure.BackgroundServices
                     _logger.LogWarning("PLC connection lost. Reconnecting...");
                     await ConnectUntilSuccessAsync(stoppingToken);
                 }
+                else
+                {
+                     ReadFromPlc();
+                    
+
+                }
 
                 await Task.Delay(3000, stoppingToken);
             }
         }
 
+        private void ReadFromPlc()
+        {
+            try
+            {
+               
+                    try
+                    {
+          
+                        EAF furnaceData = new EAF();
+                        _plc.ReadClass(furnaceData, 301, 0);
+                        _cache.Update(furnaceData);
+
+
+                }
+                    catch (Exception ex)
+                    {
+                        _logger.LogWarning("DB{Db} not readable: {Message}", 301, ex.Message);
+                    }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Read failed: {Message}", ex.Message);
+                _plc!.Close();
+            }
+        }
+
+        public void WriteBool(string variableName,bool state)
+        {
+            try
+            {   
+
+                try
+                {
+                    bool test=false;
+                    string variableNameLower = variableName.ToLower();
+                    if (variableNameLower =="load_scrap") {
+                        _plc.Write("DB302.DBX0.0", state);
+                         test = (bool)_plc.Read("DB302.DBX0.0");
+                    }
+                    else if(variableNameLower == "tap"){
+                        _plc.Write("DB302.DBX0.1", state);
+                         test = (bool)_plc.Read("DB302.DBX0.1");
+                    }
+                    else if(variableNameLower == "reset"){
+                        _plc.Write("DB302.DBD10", state);
+                         test = (bool)_plc.Read("DB302.DBD10");
+                    }
+
+                    _logger.LogInformation($"Write {variableName} to value {test}");
+
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("DB{Db} not readable: {Message}", 301, ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Read failed: {Message}", ex.Message);
+                _plc!.Close();
+            }
+        }
+
+        public void WriteReal(string variableName, float value)
+        {
+            try
+            {
+
+                try
+                {
+                    float test = 0;
+                    string variableNameLower = variableName.ToLower();
+                    if (variableNameLower == "current_setpoint")
+                    {
+                        _plc.Write("DB302.DBD2", (float)value);
+                    }
+                    else if (variableNameLower == "tap_angle")
+                    {
+                        _plc.Write("DB302.DBD6", (float)value);
+  
+                    }
+
+                    _logger.LogInformation($"Write {variableName} to value {test}");
+
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("DB{Db} not readable: {Message}", 301, ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Read failed: {Message}", ex.Message);
+                _plc!.Close();
+            }
+        }
         private async Task<Domain.Plc> FetchPlcConfigurationAsync(CancellationToken cancellationToken)
         {
             while (!cancellationToken.IsCancellationRequested)

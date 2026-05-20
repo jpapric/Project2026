@@ -2,7 +2,7 @@
 {
     public class EAFDto
     {
-        public bool Scrap_loading { get; set; }  
+        public bool Scrap_loading { get; set; }
         public bool Tapping_active { get; set; }
         public float Actual_tilting { get; set; }
         public float Material_weight { get; set; }

@@ -2,7 +2,8 @@
 using System.Net.NetworkInformation;
 using Server.Application.Interfaces;
 using Server.Domain;
-    using Server.Application.DTOs;
+using Server.Application.DTOs;
+using Server.Infrastructure.BackgroundServices;
 
 namespace Server.Infrastructure.Controllers
 {
@@ -12,13 +13,17 @@ namespace Server.Infrastructure.Controllers
     {
 
         private readonly IServerService _service;
+        private readonly PlcDataCache _cache;
+        private readonly PlcConnection _plcConnection;
 
-        public ServerController(IServerService service)
+        public ServerController(IServerService service,PlcDataCache cache,PlcConnection plcConnection)
         {
             _service = service;
+            _cache = cache;
+            _plcConnection = plcConnection;
         }
 
-
+        //-------------------PLC GET/UPDATE CONNECTION SETTINGS-----------------------------
         [HttpGet]
         [Route("[action]")]
         public IActionResult GetPlc()
@@ -99,6 +104,18 @@ namespace Server.Infrastructure.Controllers
             {
                 EAFDto eaf = _service.GetEAF();
                 return Ok(eaf);
+
+        //-------------------PLC GET/POST TO L1-----------------------------
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult GetEafDataFromPlc()
+        {
+            try
+            {
+                var data = _cache.Get();
+                if (data == null)
+                    return NoContent();
+                return Ok(data);
             }
             catch (Exception ex)
             {
@@ -113,6 +130,20 @@ namespace Server.Infrastructure.Controllers
             {
                 _service.PostEAF(eaf);
                 return Ok();
+            }
+
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult WriteBoolToPlc([FromQuery] string variable, [FromQuery] bool state)
+        {
+            try
+            {
+                _plcConnection.WriteBool(variable, state);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(503, ex.Message);
             }
             catch (Exception ex)
             {
@@ -156,11 +187,26 @@ namespace Server.Infrastructure.Controllers
                 _service.Reset();
                 return Ok();
             }
+
+        [HttpPost]
+        [Route("[action]")]
+        public IActionResult WriteRealToPlc([FromQuery] string variable, [FromQuery] float value)
+        {
+            try
+            {
+                _plcConnection.WriteReal(variable, (float)value);
+                return Ok();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return StatusCode(503, ex.Message);
+            }
             catch (Exception ex)
             {
                 return Problem(ex.Message);
             }
         }
+
     }
 }
  

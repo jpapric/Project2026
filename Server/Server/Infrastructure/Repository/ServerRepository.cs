@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Server.Application.Interfaces;
 using Server.Domain;
+using System.Security.Principal;
 using static Server.Domain.Plc;
 
 namespace Server.Infrastructure.Repository
@@ -261,6 +262,7 @@ namespace Server.Infrastructure.Repository
         //public UpdateShears(){};
         //public UpdateMaterial(){};
         //
+
 
     }
 }
