@@ -3,7 +3,6 @@ using Microsoft.Data.SqlClient;
 using Server.Application.Interfaces;
 using Server.Domain;
 using System.Security.Principal;
-using static Server.Domain.Belt;
 using static Server.Domain.Plc;
 
 namespace Server.Infrastructure.Repository
@@ -75,48 +74,6 @@ namespace Server.Infrastructure.Repository
         }
 
 
-        /*
-        public void UpdateShearSpeed(Shear shear) {
-
-        }
-        */
-        public void UpdateBeltSpeed(Belt belt)
-        {
-
-            string query = "UPDATE Belt " +
-                           "SET  Speed = @speed " +
-                           "WHERE guid = @guid";
-
-            using SqlConnection connection = new SqlConnection(_connectionString);
-            using SqlCommand command = new SqlCommand(query, connection);
-
-            command.Parameters.AddWithValue("@speed", belt.Speed);
-            command.Parameters.AddWithValue("@guid", belt.guid);
-           
-
-
-            connection.Open();
-            command.ExecuteNonQuery();
-            connection.Close();
-
-        }
-
-
-
-
-        /*
-        public void UpdateShearCutLength(float cutLength)
-        {
-
-        }
-        */
-
-
-
-        //public LastEvent(){};
-        //public UpdateShears(){};
-        //public UpdateMaterial(){};
-        //
 
     }
 }

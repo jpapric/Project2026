@@ -2,39 +2,46 @@
 {
     public class EAF
     {
-        public EAF(bool load_scrap, double current_setpoint, bool tap, double tap_angle, bool reset, double mass_tons, double temperature_C, double energy_consumed, bool furnace_overfill, bool furnace_empty, bool furnace_overtemperature, bool tapping_error)
+        public EAF() { }
+
+        public EAF(
+            bool scrap_loading,
+            bool tapping_active,
+            float actual_tilting,
+            float material_weight,
+            float actual_current,
+            float energy_consumed,
+            float actual_temperature,
+            bool furnace_overfill,
+            bool tapping_error,
+            bool furnace_empty,
+            bool furnace_overtemperature)
         {
-            Load_scrap = load_scrap;
-            Current_setpoint = current_setpoint;
-            Tap = tap;
-            Tap_angle = tap_angle;
-            Reset = reset;
-            Mass_tons = mass_tons;
-            Temperature_C = temperature_C;
+            Scrap_loading = scrap_loading;
+            Tapping_active = tapping_active;
+            Actual_tilting = actual_tilting;
+            Material_weight = material_weight;
+            Actual_current = actual_current;
             Energy_consumed = energy_consumed;
+            Actual_temperature = actual_temperature;
             Furnace_overfill = furnace_overfill;
+            Tapping_error = tapping_error;
             Furnace_empty = furnace_empty;
             Furnace_overtemperature = furnace_overtemperature;
-            Tapping_error = tapping_error;
         }
 
-        // --- INPUTS (naredbe prema PLC-u) ---
-        public bool Load_scrap { get; }  // impuls: dodaj 1t otpada
-        public double Current_setpoint { get; }  // 0–100 kA
-        public bool Tap { get; }  // enable izlijevanja
-        public double Tap_angle { get; }  // 0–45°
-        public bool Reset { get; }  // reset simulatora
+        public bool Scrap_loading { get; set; }
+        public bool Tapping_active { get; set; }
+        public float Actual_tilting { get; set; }
+        public float Material_weight { get; set; }
+        public float Actual_current { get; set; }
+        public float Energy_consumed { get; set; }
+        public float Actual_temperature { get; set; }
 
-        // --- OUTPUTS (čitanje stanja iz PLC-a) ---
-        public double Mass_tons { get; }  // trenutna masa [t]
-        public double Temperature_C { get; }  // temperatura [°C]
-        public double Energy_consumed { get; }  // MWh potrošeno
 
-        // --- ALARMI ---
-        public bool Furnace_overfill { get; }
-        public bool Furnace_empty { get; }
-        public bool Furnace_overtemperature { get; }
-        public bool Tapping_error { get; }
-
+        public bool Furnace_overfill { get; set; }
+        public bool Tapping_error { get; set; }
+        public bool Furnace_empty { get; set; }
+        public bool Furnace_overtemperature { get; set; }
     }
 }

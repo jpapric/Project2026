@@ -16,8 +16,10 @@ namespace Server
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            
-            builder.Services.AddHostedService<PlcConnection> ();
+            builder.Services.AddSingleton<PlcDataCache>();
+            builder.Services.AddSingleton<PlcConnection>();
+            builder.Services.AddHostedService(sp => sp.GetRequiredService<PlcConnection>());
+
             builder.Services.AddScoped<IServerRepository, ServerRepository>();
             builder.Services.AddScoped<IServerService, ServerService>();
             
