@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Client.Models
 {
-    internal class Model
+    public class Model
     {
     }
 }

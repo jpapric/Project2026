@@ -55,10 +55,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Proxies\Proxy.cs" />
-    <Compile Include="ViewModel\ViewModel.cs" />
-    <Compile Include="Views\View.xaml.cs">
-      <DependentUpon>View.xaml</DependentUpon>
+    <Compile Include="Models\MockModel.cs" />
+    <Compile Include="Proxies\EAFProxy.cs" />
+    <Compile Include="ViewModel\EAFViewModel.cs" />
+    <Compile Include="ViewModel\MockViewModel.cs" />
+    <Compile Include="Views\EAFView.xaml.cs">
+      <DependentUpon>EAFView.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -68,12 +70,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Helpers\Command.cs" />
+    <Compile Include="Helpers\GenericCommand.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Views\View.xaml">
+    <Page Include="Views\EAFView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -105,6 +107,5 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

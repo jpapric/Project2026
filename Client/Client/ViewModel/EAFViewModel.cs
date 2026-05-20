@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client.Proxies
+namespace Client.ViewModel
 {
-    internal class Proxy
+    public class EAFViewModel
     {
+
     }
 }

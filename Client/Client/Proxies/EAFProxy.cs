@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Client.Helpers
+namespace Client.Proxies
 {
-    internal class Command
+    public class EAFProxy
     {
     }
 }
