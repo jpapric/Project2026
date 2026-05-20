@@ -11,12 +11,14 @@ namespace Server.Infrastructure.Controllers
     [Route("api/server")]
     public class ServerController : ControllerBase
     {
-
         private readonly IServerService _service;
         private readonly PlcDataCache _cache;
         private readonly PlcConnection _plcConnection;
 
-        public ServerController(IServerService service,PlcDataCache cache,PlcConnection plcConnection)
+        public ServerController(
+            IServerService service,
+            PlcDataCache cache,
+            PlcConnection plcConnection)
         {
             _service = service;
             _cache = cache;
@@ -24,6 +26,7 @@ namespace Server.Infrastructure.Controllers
         }
 
         //-------------------PLC GET/UPDATE CONNECTION SETTINGS-----------------------------
+
         [HttpGet]
         [Route("[action]")]
         public IActionResult GetPlc()
@@ -53,6 +56,7 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+
         [HttpPost]
         [Route("[action]")]
         public IActionResult SetCurrent([FromBody] float current)
@@ -67,6 +71,7 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+
         [HttpPost]
         [Route("[action]")]
         public IActionResult SetAngle([FromBody] float angle)
@@ -96,6 +101,7 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+
         [HttpGet]
         [Route("[action]")]
         public IActionResult GetEAF()
@@ -104,8 +110,15 @@ namespace Server.Infrastructure.Controllers
             {
                 EAFDto eaf = _service.GetEAF();
                 return Ok(eaf);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
 
         //-------------------PLC GET/POST TO L1-----------------------------
+
         [HttpGet]
         [Route("[action]")]
         public IActionResult GetEafDataFromPlc()
@@ -113,8 +126,10 @@ namespace Server.Infrastructure.Controllers
             try
             {
                 var data = _cache.Get();
+
                 if (data == null)
                     return NoContent();
+
                 return Ok(data);
             }
             catch (Exception ex)
@@ -122,6 +137,7 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+
         [HttpPost]
         [Route("[action]")]
         public IActionResult PostEAF([FromBody] EAFDto eaf)
@@ -131,10 +147,17 @@ namespace Server.Infrastructure.Controllers
                 _service.PostEAF(eaf);
                 return Ok();
             }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult WriteBoolToPlc([FromQuery] string variable, [FromQuery] bool state)
+        public IActionResult WriteBoolToPlc(
+            [FromQuery] string variable,
+            [FromQuery] bool state)
         {
             try
             {
@@ -150,6 +173,7 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+
         [HttpPost]
         [Route("[action]")]
         public IActionResult LoadScrap()
@@ -164,6 +188,7 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+
         [HttpPost]
         [Route("[action]")]
         public IActionResult Tap()
@@ -178,6 +203,7 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+
         [HttpPost]
         [Route("[action]")]
         public IActionResult Reset()
@@ -187,14 +213,21 @@ namespace Server.Infrastructure.Controllers
                 _service.Reset();
                 return Ok();
             }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult WriteRealToPlc([FromQuery] string variable, [FromQuery] float value)
+        public IActionResult WriteRealToPlc(
+            [FromQuery] string variable,
+            [FromQuery] float value)
         {
             try
             {
-                _plcConnection.WriteReal(variable, (float)value);
+                _plcConnection.WriteReal(variable, value);
                 return Ok();
             }
             catch (InvalidOperationException ex)
@@ -206,10 +239,5 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
-
     }
 }
- 
-
-
-       

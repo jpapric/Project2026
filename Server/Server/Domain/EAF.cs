@@ -30,21 +30,7 @@
             Furnace_overtemperature = furnace_overtemperature;
         }
 
-<<<<<<< HEAD
-        public bool Scrap_loading { get; } 
-        public bool Tapping_active { get; }
-        public float Actual_tilting { get; }
-        public float Material_weight { get; }
-        public float Actual_current { get; }
-        public float Energy_consumed { get; }
-        public float Actual_temperature { get; }
-
-        
-        public bool Furnace_overfill { get; }
-        public bool Tapping_error { get; }
-        public bool Furnace_empty { get; }
-        public bool Furnace_overtemperature { get; }
-=======
+        // Core Metrics
         public bool Scrap_loading { get; set; }
         public bool Tapping_active { get; set; }
         public float Actual_tilting { get; set; }
@@ -53,11 +39,10 @@
         public float Energy_consumed { get; set; }
         public float Actual_temperature { get; set; }
 
-
+        // Status / Error Flags
         public bool Furnace_overfill { get; set; }
         public bool Tapping_error { get; set; }
         public bool Furnace_empty { get; set; }
         public bool Furnace_overtemperature { get; set; }
->>>>>>> plc_comm
     }
 }

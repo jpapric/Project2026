@@ -107,19 +107,28 @@ namespace Server.Infrastructure.Repository
             connection.Close();
 
         }
-        public void LoadScrap()
+        public async Task LoadScrap()
         {
-            string query = "UPDATE L2_TO_PLC " +
-                           "SET LOAD_SCRAP = @Load_scrap";
+            try
+            {
+                string query = "UPDATE L2_TO_PLC SET Load_scrap = @Load_scrap";
 
-            using SqlConnection connection = new SqlConnection(_connectionString);
-            using SqlCommand command = new SqlCommand(query, connection);
+                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
 
-            command.Parameters.AddWithValue("@Load_scrap", true);
+                command.Parameters.AddWithValue("@Load_scrap", true);
+                command.ExecuteNonQuery();
 
-            connection.Open();
-            command.ExecuteNonQuery();
-            connection.Close();
+                await Task.Delay(500);
+
+                command.Parameters["@Load_scrap"].Value = false;
+                command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Greška pri Load_scrap upisu: {ex.Message}");
+            }
         }
         public void Tap()
         {
