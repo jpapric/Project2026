@@ -102,12 +102,12 @@ namespace Client.Views
         {
             double fraction = Math.Max(0, Math.Min(1, _vm.MaterialWeight / 50.0));
             double fillHeight = fraction * MaxFillH;
-            double translateY = 195.0 - fillHeight;
 
+            MaterialFill.Height = fillHeight;
             MaterialFill.Opacity = fraction > 0.01 ? 0.92 : 0;
-            MaterialFill.RenderTransform = new TranslateTransform(0, translateY);
+            Canvas.SetTop(MaterialFill, 194.0 - fillHeight);
 
-            Canvas.SetTop(WeightOverlay, Math.Max(translateY + 6, 195 - 28));
+            Canvas.SetTop(WeightOverlay, Math.Max(194.0 - fillHeight + 6, 166.0));
             WeightOverlay.Text = $"{_vm.MaterialWeight:F1} T  |  {fraction * 100:F0}%";
 
             double pct = Math.Min(100, (_vm.EnergyConsumed / MaxEnergy) * 100);
