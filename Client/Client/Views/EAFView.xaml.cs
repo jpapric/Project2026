@@ -1,5 +1,9 @@
-﻿using Client.ViewModel;
+﻿using Client.Models;
+using Client.Proxies;
+using Client.ViewModel;
 using System;
+using System.Runtime.Remoting.Contexts;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -30,10 +34,8 @@ namespace Client.Views
             DataContext = _vm;
 
             _vm.StartPolling();
-<<<<<<< HEAD
+
             Loaded += async (s, e) => await LoadPlcConfig();
-=======
->>>>>>> origin/main
 
             _animTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
             _animTimer.Tick += (s, e) => DrawFrame();
@@ -124,6 +126,8 @@ namespace Client.Views
         {
             var green = new SolidColorBrush(Color.FromRgb(76, 175, 80));
             var red = new SolidColorBrush(Color.FromRgb(244, 67, 54));
+            var gray = new SolidColorBrush(Color.FromRgb(68, 68, 68));
+            var orange = new SolidColorBrush(Color.FromRgb(255, 152, 0));
 
             LedPlc.Fill = _vm.IsConnected ? green : red;
             LedBackend.Fill = _vm.BackendConnected ? green : red;
@@ -132,12 +136,8 @@ namespace Client.Views
             ConnStatusLed.Fill = _vm.IsConnected ? green : red;
             ConnStatusText.Text = _vm.IsConnected ? "Connected" : "Not connected";
 
-            LedScrap.Fill = _vm.ScrapLoading
-                ? green : new SolidColorBrush(Color.FromRgb(68, 68, 68));
-
-            LedTapping.Fill = _vm.TappingActive
-                ? new SolidColorBrush(Color.FromRgb(255, 152, 0))
-                : new SolidColorBrush(Color.FromRgb(68, 68, 68));
+            LedScrap.Fill = _vm.ScrapLoading ? green : gray;
+            LedTapping.Fill = _vm.TappingActive ? orange : gray;
 
             LoadScrapBtn.IsEnabled = !_vm.FurnaceOverfill;
             LoadScrapBtn.Opacity = _vm.FurnaceOverfill ? 0.4 : 1.0;
@@ -150,6 +150,8 @@ namespace Client.Views
             TapErrorBanner.Visibility = _vm.TappingError ? Visibility.Visible : Visibility.Collapsed;
             EmptyBanner.Visibility = _vm.FurnaceEmpty ? Visibility.Visible : Visibility.Collapsed;
         }
+
+        // ── Button handlers ────────────────────────────────────────────────────
 
         private void LoadScrapBtn_Click(object sender, RoutedEventArgs e)
             => _vm.LoadScrapCommand.Execute(null);
@@ -179,9 +181,6 @@ namespace Client.Views
             CurrentSetpointInput.Text = "0";
         }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         private async void ConnectBtn_Click(object sender, RoutedEventArgs e)
         {
             string ip = IpInput.Text.Trim();
@@ -199,6 +198,7 @@ namespace Client.Views
             ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(255, 152, 0));
 
             string cpuString = (CpuTypeInput.SelectedItem as ComboBoxItem)?.Content?.ToString();
+
             PLCDto.CpuType cpu;
             if (cpuString == "S7-1200") cpu = PLCDto.CpuType.S71200;
             else if (cpuString == "S7-400") cpu = PLCDto.CpuType.S7400;
@@ -212,12 +212,12 @@ namespace Client.Views
                 Slot = int.TryParse(slot, out int s) ? s : 1,
                 Cpu = cpu
             };
+
             try
             {
                 await Task.Delay(1000);
                 _vm.ManuallyDisconnected = false;
                 _vm.UpdatePlcCommand.Execute(plcDto);
-                //_vm.StartPolling()
 
                 ConnStatusLed.Fill = _vm.IsConnected
                     ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
@@ -225,6 +225,7 @@ namespace Client.Views
                 ConnStatusText.Text = _vm.IsConnected ? "Connected" : "PLC not reachable";
                 PlcAddressText.Text = $"{ip} | Rack {rack} | Slot {slot}";
                 CpuText.Text = $"CPU: {cpuString}";
+
                 ConnectBtn.IsEnabled = false;
                 DisconnectBtn.IsEnabled = true;
             }
@@ -235,6 +236,7 @@ namespace Client.Views
                 ConnectBtn.IsEnabled = true;
             }
         }
+
         private void DisconnectBtn_Click(object sender, RoutedEventArgs e)
         {
             _vm.ManuallyDisconnected = true;
@@ -251,8 +253,9 @@ namespace Client.Views
         {
             try
             {
-                var proxy = new Client.Proxies.EAFProxy();
+                var proxy = new EAFProxy();
                 PLCDto plc = await proxy.GetPlcAsync();
+
                 IpInput.Text = plc.Ip;
                 RackInput.Text = plc.Rack.ToString();
                 SlotInput.Text = plc.Slot.ToString();
@@ -264,17 +267,22 @@ namespace Client.Views
                 else cpuName = "S7-1500";
 
                 foreach (ComboBoxItem item in CpuTypeInput.Items)
+                {
                     if (item.Content.ToString() == cpuName)
-                    { CpuTypeInput.SelectedItem = item; break; }
+                    {
+                        CpuTypeInput.SelectedItem = item;
+                        break;
+                    }
+                }
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show($"Error loading PLC configuration: {ex.Message}");
             }
         }
 
->>>>>>> fd9245c (add led indicators functionality fixed)
-=======
->>>>>>> origin/main
+        // ── Navigation ─────────────────────────────────────────────────────────
+
         private void ShowPage(Grid page)
         {
             ProcessPage.Visibility = Visibility.Collapsed;
@@ -291,15 +299,27 @@ namespace Client.Views
         }
 
         private void ProcessBtn_Click(object sender, RoutedEventArgs e)
-        { ShowPage(ProcessPage); ProcessBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray"); }
+        {
+            ShowPage(ProcessPage);
+            ProcessBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray");
+        }
 
         private void ConnectionBtn_Click(object sender, RoutedEventArgs e)
-        { ShowPage(ConnectionPage); ConnectionBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray"); }
+        {
+            ShowPage(ConnectionPage);
+            ConnectionBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray");
+        }
 
         private void HistoryBtn_Click(object sender, RoutedEventArgs e)
-        { ShowPage(HistoryPage); HistoryBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray"); }
+        {
+            ShowPage(HistoryPage);
+            HistoryBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray");
+        }
 
         private void AlarmsBtn_Click(object sender, RoutedEventArgs e)
-        { ShowPage(AlarmsPage); AlarmsBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray"); }
+        {
+            ShowPage(AlarmsPage);
+            AlarmsBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray");
+        }
     }
 }
