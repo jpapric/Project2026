@@ -220,7 +220,7 @@ namespace Client.ViewModel
                 ScrapLoading = data.Scrap_loading;
                 TappingActive = data.Tapping_active;
                 ActualTilting = data.Actual_tilting;
-                MaterialWeight = data.Material_weight;
+                MaterialWeight = data.Material_weight; // /1000f
                 ActualCurrent = data.Actual_current;
                 EnergyConsumed = data.Energy_consumed;
                 ActualTemperature = data.Actual_temperature;
@@ -245,32 +245,62 @@ namespace Client.ViewModel
 
         private async Task LoadScrap()
         {
-            try { await _proxy.LoadScrapAsync(); }
-            catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
+            try 
+            { 
+                await _proxy.LoadScrapAsync(); 
+            }
+            catch (Exception ex) 
+            { 
+                ConnectionStatus = $"Error: {ex.Message}"; 
+            }
         }
 
         private async Task Tap()
         {
-            try { await _proxy.TapAsync(); }
-            catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
+            try 
+            { 
+                await _proxy.TapAsync(); 
+            }
+            catch (Exception ex) 
+            { 
+                ConnectionStatus = $"Error: {ex.Message}"; 
+            }
         }
 
         private async Task Reset()
         {
-            try { await _proxy.ResetAsync(); }
-            catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
+            try 
+            { 
+                await _proxy.ResetAsync(); 
+            }
+            catch (Exception ex) 
+            { 
+                ConnectionStatus = $"Error: {ex.Message}"; 
+            }
         }
 
         private async Task SetCurrent()
         {
-            try { await _proxy.SetCurrentAsync(CurrentSetpoint); }
-            catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
+            try 
+            { 
+                await _proxy.SetCurrentAsync(CurrentSetpoint); 
+            }
+            catch (Exception ex) 
+            { 
+                ConnectionStatus = $"Error: {ex.Message}"; 
+            }
         }
 
         private async Task SetAngle()
         {
-            try { await _proxy.SetAngleAsync(TapAngleSetpoint); }
-            catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
+            try 
+            { 
+                await _proxy.SetAngleAsync(TapAngleSetpoint); 
+            }
+            catch (Exception ex) 
+            { 
+                ConnectionStatus = $"Error: {ex.Message}"; 
+            }
         }
 
         #endregion
