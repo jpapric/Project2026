@@ -16,6 +16,10 @@ namespace Server.Application.Interfaces
         Task LoadScrap();
         Task Tap();
         Task Reset();
+        List<EventDto> GetEvents();
+
+        void Event_detection();
+
 
     }
 }

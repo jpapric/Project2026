@@ -269,6 +269,133 @@ namespace Server.Infrastructure.Repository
                 throw new Exception("No PLC configuration found in database.");
             }
         }
+
+        public void PostEvent(string name, string type, DateTime time)
+        {
+            string query = "UPDATE EVENTS                          " +
+                           "SET EVENT_NAME = @name                 " +
+                           "SET EVENT_TYPE = @type                 " +
+                           "SET EVENT_TIME = @time                 " ;
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@name", name);
+            command.Parameters.AddWithValue("@type", type);
+            command.Parameters.AddWithValue("@time", time);
+            connection.Open();
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
+        public List<Event> GetEvents()
+        {
+            try
+            {
+                List<Event> events = new List<Event>();
+                string query = @"SELECT EVENT_NAME, EVENT_TYPE, EVENT_TIME
+                        FROM EVENTS 
+                        ORDER BY Timestamp DESC";
+
+                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                using SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    events.Add(new Event(
+                        reader.GetString(reader.GetOrdinal("EVENT_NAME")),
+                        reader.GetString(reader.GetOrdinal("EVENT_TYPE")),
+                        reader.GetDateTime(reader.GetOrdinal("EVENT_TIME"))
+                    ));
+                }
+
+                return events;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Greška pri čitanju evenata: {ex.Message}");
+            }
+        }
+        public void Event_detection()
+        {
+            try
+            {
+                string query = @"SELECT TOP 2 Scrap_loading, Tapping_active, Actual_tilting, 
+                Material_weight, Actual_current, Energy_consumed, Actual_temperature, 
+                Furnace_overfill, Tapping_error, Furnace_empty, Furnace_overtemperature
+                FROM PLC_TO_L2
+                ORDER BY Id DESC";
+
+                using SqlConnection connection = new SqlConnection(_connectionString);
+                using SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                using SqlDataReader reader = command.ExecuteReader();
+
+                EAF current = null;
+                EAF previous = null;
+
+                if (reader.Read())
+                    current = ReadEAFFromReader(reader);  // prvi red = najnoviji
+
+                if (reader.Read())
+                    previous = ReadEAFFromReader(reader); // drugi red = prethodni
+
+                if (current == null || previous == null) return;
+
+                if (!previous.Scrap_loading && current.Scrap_loading)
+                    PostEvent("Loading scrap", "Feedback", DateTime.Now);
+                else if (previous.Scrap_loading && !current.Scrap_loading)
+                    PostEvent("Loading scrap finished", "Feedback", DateTime.Now);
+
+                if (!previous.Tapping_active && current.Tapping_active)
+                    PostEvent("Tapping started", "Feedback", DateTime.Now);
+                else if (previous.Tapping_active && !current.Tapping_active)
+                    PostEvent("Tapping finished", "Feedback", DateTime.Now);
+
+                if (!previous.Furnace_overfill && current.Furnace_overfill)
+                    PostEvent("Furnace overfilled", "Warning", DateTime.Now);
+                else if (previous.Furnace_overfill && !current.Furnace_overfill)
+                    PostEvent("Furnace overfill resolved", "Feedback", DateTime.Now);
+
+                if (!previous.Tapping_error && current.Tapping_error)
+                    PostEvent("Tapping error", "Warning", DateTime.Now);
+                else if (previous.Tapping_error && !current.Tapping_error)
+                    PostEvent("Tapping error resolved", "Feedback", DateTime.Now);
+
+                if (!previous.Furnace_empty && current.Furnace_empty)
+                    PostEvent("Furnace empty", "Warning", DateTime.Now);
+                else if (previous.Furnace_empty && !current.Furnace_empty)
+                    PostEvent("Furnace filled", "Feedback", DateTime.Now);
+
+                if (!previous.Furnace_overtemperature && current.Furnace_overtemperature)
+                    PostEvent("Furnace overheated", "Warning", DateTime.Now);
+                else if (previous.Furnace_overtemperature && !current.Furnace_overtemperature)
+                    PostEvent("Furnace overtemperature resolved", "Feedback", DateTime.Now);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Greška pri detekciji eventa: {ex.Message}");
+            }
+        }
+        private EAF ReadEAFFromReader(SqlDataReader reader)
+        {
+            return new EAF(
+                reader.GetBoolean(reader.GetOrdinal("Scrap_loading")),
+                reader.GetBoolean(reader.GetOrdinal("Tapping_active")),
+                reader.GetFloat(reader.GetOrdinal("Actual_tilting")),
+                reader.GetFloat(reader.GetOrdinal("Material_weight")),
+                reader.GetFloat(reader.GetOrdinal("Actual_current")),
+                reader.GetFloat(reader.GetOrdinal("Energy_consumed")),
+                reader.GetFloat(reader.GetOrdinal("Actual_temperature")),
+                reader.GetBoolean(reader.GetOrdinal("Furnace_overfill")),
+                reader.GetBoolean(reader.GetOrdinal("Tapping_error")),
+                reader.GetBoolean(reader.GetOrdinal("Furnace_empty")),
+                reader.GetBoolean(reader.GetOrdinal("Furnace_overtemperature"))
+            );
+        }
+
         //public LastEvent(){};
         //public UpdateShears(){};
         //public UpdateMaterial(){};

@@ -522,6 +522,7 @@
                         </UniformGrid>
 
                         <DataGrid x:Name="HistoryGrid" Grid.Row="2"
+                                  ItemsSource="{Binding Events}"
                                   Background="#1E1E1E" Foreground="White"
                                   BorderBrush="#333" RowBackground="#1E1E1E"
                                   AlternatingRowBackground="#242424"
