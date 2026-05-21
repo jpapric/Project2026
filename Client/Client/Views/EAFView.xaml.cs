@@ -30,7 +30,10 @@ namespace Client.Views
             DataContext = _vm;
 
             _vm.StartPolling();
+<<<<<<< HEAD
             Loaded += async (s, e) => await LoadPlcConfig();
+=======
+>>>>>>> origin/main
 
             _animTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
             _animTimer.Tick += (s, e) => DrawFrame();
@@ -177,6 +180,7 @@ namespace Client.Views
         }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         private async void ConnectBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -269,6 +273,8 @@ namespace Client.Views
         }
 
 >>>>>>> fd9245c (add led indicators functionality fixed)
+=======
+>>>>>>> origin/main
         private void ShowPage(Grid page)
         {
             ProcessPage.Visibility = Visibility.Collapsed;

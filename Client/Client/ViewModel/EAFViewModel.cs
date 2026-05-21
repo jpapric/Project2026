@@ -42,9 +42,12 @@ namespace Client.ViewModel
         private bool _furnaceEmpty;
         private bool _furnaceOvertemperature;
 
+<<<<<<< HEAD
         private bool _backendConnected;
         private bool _manuallyDisconnected = false;
 
+=======
+>>>>>>> origin/main
         #endregion
 
         #region PLC Data Properties
@@ -159,6 +162,7 @@ namespace Client.ViewModel
             }
         }
 
+<<<<<<< HEAD
         public bool BackendConnected
         {
             get => _backendConnected;
@@ -179,6 +183,8 @@ namespace Client.ViewModel
             }
         }
 
+=======
+>>>>>>> origin/main
         #endregion
 
         #region Setpoints
