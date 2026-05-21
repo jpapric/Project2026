@@ -30,6 +30,7 @@ namespace Client.Views
             DataContext = _vm;
 
             _vm.StartPolling();
+            Loaded += async (s, e) => await LoadPlcConfig();
 
             _animTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
             _animTimer.Tick += (s, e) => DrawFrame();
@@ -118,13 +119,18 @@ namespace Client.Views
 
         private void DrawLeds()
         {
-            LedPlc.Fill = _vm.IsConnected
-                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
-                : new SolidColorBrush(Color.FromRgb(244, 67, 54));
+            var green = new SolidColorBrush(Color.FromRgb(76, 175, 80));
+            var red = new SolidColorBrush(Color.FromRgb(244, 67, 54));
+
+            LedPlc.Fill = _vm.IsConnected ? green : red;
+            LedBackend.Fill = _vm.BackendConnected ? green : red;
+            LedDatabase.Fill = _vm.IsConnected ? green : red;
+
+            ConnStatusLed.Fill = _vm.IsConnected ? green : red;
+            ConnStatusText.Text = _vm.IsConnected ? "Connected" : "Not connected";
 
             LedScrap.Fill = _vm.ScrapLoading
-                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
-                : new SolidColorBrush(Color.FromRgb(68, 68, 68));
+                ? green : new SolidColorBrush(Color.FromRgb(68, 68, 68));
 
             LedTapping.Fill = _vm.TappingActive
                 ? new SolidColorBrush(Color.FromRgb(255, 152, 0))
@@ -170,6 +176,99 @@ namespace Client.Views
             CurrentSetpointInput.Text = "0";
         }
 
+<<<<<<< HEAD
+=======
+        private async void ConnectBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string ip = IpInput.Text.Trim();
+            string rack = RackInput.Text.Trim();
+            string slot = SlotInput.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(ip))
+            {
+                MessageBox.Show("Please enter an IP address.");
+                return;
+            }
+
+            ConnectBtn.IsEnabled = false;
+            ConnStatusText.Text = "Connecting...";
+            ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(255, 152, 0));
+
+            string cpuString = (CpuTypeInput.SelectedItem as ComboBoxItem)?.Content?.ToString();
+            PLCDto.CpuType cpu;
+            if (cpuString == "S7-1200") cpu = PLCDto.CpuType.S71200;
+            else if (cpuString == "S7-400") cpu = PLCDto.CpuType.S7400;
+            else if (cpuString == "S7-300") cpu = PLCDto.CpuType.S7300;
+            else cpu = PLCDto.CpuType.S71500;
+
+            var plcDto = new PLCDto
+            {
+                Ip = ip,
+                Rack = int.TryParse(rack, out int r) ? r : 0,
+                Slot = int.TryParse(slot, out int s) ? s : 1,
+                Cpu = cpu
+            };
+            try
+            {
+                await Task.Delay(1000);
+                _vm.ManuallyDisconnected = false;
+                _vm.UpdatePlcCommand.Execute(plcDto);
+                //_vm.StartPolling()
+
+                ConnStatusLed.Fill = _vm.IsConnected
+                    ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
+                    : new SolidColorBrush(Color.FromRgb(244, 67, 54));
+                ConnStatusText.Text = _vm.IsConnected ? "Connected" : "PLC not reachable";
+                PlcAddressText.Text = $"{ip} | Rack {rack} | Slot {slot}";
+                CpuText.Text = $"CPU: {cpuString}";
+                ConnectBtn.IsEnabled = false;
+                DisconnectBtn.IsEnabled = true;
+            }
+            catch
+            {
+                ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(244, 67, 54));
+                ConnStatusText.Text = "Connection failed";
+                ConnectBtn.IsEnabled = true;
+            }
+        }
+        private void DisconnectBtn_Click(object sender, RoutedEventArgs e)
+        {
+            _vm.ManuallyDisconnected = true;
+            _vm.IsConnected = false;
+            _vm.BackendConnected = false;
+
+            ConnectBtn.IsEnabled = true;
+            DisconnectBtn.IsEnabled = false;
+            PlcAddressText.Text = "Not connected";
+            CpuText.Text = "CPU: —";
+        }
+
+        private async Task LoadPlcConfig()
+        {
+            try
+            {
+                var proxy = new Client.Proxies.EAFProxy();
+                PLCDto plc = await proxy.GetPlcAsync();
+                IpInput.Text = plc.Ip;
+                RackInput.Text = plc.Rack.ToString();
+                SlotInput.Text = plc.Slot.ToString();
+
+                string cpuName;
+                if (plc.Cpu == PLCDto.CpuType.S71200) cpuName = "S7-1200";
+                else if (plc.Cpu == PLCDto.CpuType.S7400) cpuName = "S7-400";
+                else if (plc.Cpu == PLCDto.CpuType.S7300) cpuName = "S7-300";
+                else cpuName = "S7-1500";
+
+                foreach (ComboBoxItem item in CpuTypeInput.Items)
+                    if (item.Content.ToString() == cpuName)
+                    { CpuTypeInput.SelectedItem = item; break; }
+            }
+            catch(Exception ex) {
+                MessageBox.Show($"Error loading PLC configuration: {ex.Message}");
+            }
+        }
+
+>>>>>>> fd9245c (add led indicators functionality fixed)
         private void ShowPage(Grid page)
         {
             ProcessPage.Visibility = Visibility.Collapsed;

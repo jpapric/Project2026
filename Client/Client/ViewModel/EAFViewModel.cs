@@ -42,6 +42,12 @@ namespace Client.ViewModel
         private bool _furnaceEmpty;
         private bool _furnaceOvertemperature;
 
+<<<<<<< HEAD
+=======
+        private bool _backendConnected;
+        private bool _manuallyDisconnected = false;
+
+>>>>>>> fd9245c (add led indicators functionality fixed)
         #endregion
 
         #region PLC Data Properties
@@ -153,6 +159,26 @@ namespace Client.ViewModel
             {
                 _furnaceOvertemperature = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public bool BackendConnected
+        {
+            get => _backendConnected;
+            set 
+            { 
+                _backendConnected = value; 
+                OnPropertyChanged(); 
+            }
+        }
+
+        public bool ManuallyDisconnected
+        {
+            get => _manuallyDisconnected;
+            set
+            { 
+                _manuallyDisconnected = value; 
+                OnPropertyChanged(); 
             }
         }
 
@@ -268,6 +294,14 @@ namespace Client.ViewModel
 
         private async Task PollAsync()
         {
+
+            if (_manuallyDisconnected)
+            {
+                IsConnected = false;
+                BackendConnected = false;
+                return;
+            }
+
             try
             {
                 EAFDto data = await _proxy.GetEafDataFromPlcAsync();
