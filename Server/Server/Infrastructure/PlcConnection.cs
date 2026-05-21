@@ -7,6 +7,7 @@ using S7.Net;
 using Server.Application.Interfaces;
 using Server.Domain;
 using System;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -111,8 +112,10 @@ namespace Server.Infrastructure.BackgroundServices
                         _cache.Update(furnaceData);
                         using var scope = _scopeFactory.CreateScope();
                         var repository = scope.ServiceProvider.GetRequiredService<IServerRepository>();
+                        repository.Event_detection(furnaceData);
                         repository.PostEAF(furnaceData);
-                        watch.Stop();
+
+                    watch.Stop();
                         //_logger.LogInformation($"Sending speed {watch.ElapsedMilliseconds}");
 
                 }
@@ -177,11 +180,17 @@ namespace Server.Infrastructure.BackgroundServices
                     if (variableNameLower == "current_setpoint")
                     {
                         _plc.Write("DB302.DBD2", (float)value);
+                        object table1 = _plc.Read("DB302.DBD2");
+
                     }
                     else if (variableNameLower == "tap_angle")
                     {
-                        _plc.Write("DB302.DBD6", (float)value);
-  
+                        _plc.Write("DB302.DBD6", (float)value); 
+
+                        object table1 = _plc.Read("DB302.DBD6.0");
+                        var table2 = Convert.ToSingle(_plc.Read("DB301.DBD2"));
+                        
+
                     }
 
                     _logger.LogInformation($"Write {variableName} to value {test}");
@@ -197,6 +206,7 @@ namespace Server.Infrastructure.BackgroundServices
                 _logger.LogError("Read failed: {Message}", ex.Message);
                 _plc!.Close();
             }
+        
         }
         private async Task<Domain.Plc> FetchPlcConfigurationAsync(CancellationToken cancellationToken)
         {

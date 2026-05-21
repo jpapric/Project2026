@@ -246,19 +246,6 @@ namespace Server.Infrastructure.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("[action]")]
-        public IActionResult Event_detection()
-        {
-            try
-            {
-                _service.Event_detection();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
-        }
+       
     }
 }
