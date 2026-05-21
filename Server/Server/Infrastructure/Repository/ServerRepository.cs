@@ -120,6 +120,7 @@ namespace Server.Infrastructure.Repository
                 command.Parameters.AddWithValue("@Load_scrap", true);
                 command.ExecuteNonQuery();
 
+                
                 await Task.Delay(500);
 
                 command.Parameters["@Load_scrap"].Value = false;
@@ -265,10 +266,10 @@ namespace Server.Infrastructure.Repository
                 throw new Exception("No PLC configuration found in database.");
             }
         }
-        //public LastEvent(){};
-        //public UpdateShears(){};
-        //public UpdateMaterial(){};
-        //
+
+
+        
+        
 
 
     }

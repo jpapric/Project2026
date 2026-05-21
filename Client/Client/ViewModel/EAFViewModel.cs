@@ -1,4 +1,5 @@
-﻿using Client.Proxies;
+﻿using Client.Models;
+using Client.Proxies;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,14 +14,11 @@ namespace Client.ViewModel
     {
         private readonly EAFProxy _eafProxy = new EAFProxy();
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        public async Task PlcConnectionTab()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PLCDto plc = await _eafProxy.GetPlc();
+            PlcConnectionViewModel plcConnectionTab = new PlcConnectionViewModel(plc);
         }
-        #endregion
 
     }
 }

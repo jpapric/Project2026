@@ -35,6 +35,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.ConfigurationManager, Version=10.0.0.8, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -59,12 +62,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Helpers\AsyncCommand.cs" />
     <Compile Include="Models\EAFDto.cs" />
     <Compile Include="Models\MockModel.cs" />
     <Compile Include="Models\PLCDto.cs" />
     <Compile Include="Proxies\EAFProxy.cs" />
     <Compile Include="ViewModel\EAFViewModel.cs" />
     <Compile Include="ViewModel\MockViewModel.cs" />
+    <Compile Include="ViewModel\PlcConnectionViewModel.cs" />
     <Compile Include="Views\EAFView.xaml.cs">
       <DependentUpon>EAFView.xaml</DependentUpon>
     </Compile>

@@ -4,7 +4,10 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             Background="#0F0F0F">
+             Background="#0F0F0F"
+             xmlns:viewModels="clr-namespace:Client.ViewModel"
+             d:DataContext="{d:DesignInstance viewModels:EAFViewModel}">
+    
 
 
     <UserControl.Resources>
@@ -413,19 +416,19 @@
                             <Border Background="#1E1E1E" CornerRadius="8" Padding="24">
                                 <StackPanel>
                                     <TextBlock Text="IP ADDRESS" Foreground="#AAA" FontSize="11" Margin="0,0,0,5"/>
-                                    <TextBox x:Name="IpInput" Text="192.168.0.1"
+                                    <TextBox x:Name="IpInput" Text="{Binding plcConnectionTab.Ip, UpdateSourceTrigger=PropertyChanged}"
                                              Background="#2A2A2A" Foreground="#00BFFF"
                                              BorderBrush="#333" Padding="10,8"
                                              FontSize="14" Margin="0,0,0,16"/>
 
                                     <TextBlock Text="RACK" Foreground="#AAA" FontSize="11" Margin="0,0,0,5"/>
-                                    <TextBox x:Name="RackInput" Text="0"
+                                    <TextBox x:Name="RackInput"  Text="{Binding plcConnectionTab.Rack, UpdateSourceTrigger=PropertyChanged}"
                                              Background="#2A2A2A" Foreground="#00BFFF"
                                              BorderBrush="#333" Padding="10,8"
                                              FontSize="14" Margin="0,0,0,16"/>
 
                                     <TextBlock Text="SLOT" Foreground="#AAA" FontSize="11" Margin="0,0,0,5"/>
-                                    <TextBox x:Name="SlotInput" Text="1"
+                                    <TextBox x:Name="SlotInput"  Text="{Binding plcConnectionTab.Slot, UpdateSourceTrigger=PropertyChanged}"
                                              Background="#2A2A2A" Foreground="#00BFFF"
                                              BorderBrush="#333" Padding="10,8"
                                              FontSize="14" Margin="0,0,0,24"/>
@@ -435,7 +438,7 @@
                                               Background="#2A2A2A" Foreground="Black"
                                               BorderBrush="#333" Padding="10,8"
                                               FontSize="14" Margin="0,0,0,24"
-                                              SelectedIndex="0">
+                                              SelectedIndex="{Binding plcConnectionTab.Cpu, UpdateSourceTrigger=PropertyChanged}">
                                         <ComboBoxItem Content="S7-1500"/>
                                         <ComboBoxItem Content="S7-1200"/>
                                         <ComboBoxItem Content="S7-400"/>
@@ -448,7 +451,9 @@
                                             <ColumnDefinition Width="12"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Button Content="CONNECT" Height="44"
+                                        <Button Content="CONNECT" 
+                                                Command="{Binding plcConnectionTab.connectCommand}"
+                                                Height="44"
                                                 Background="#1F5F2C" Foreground="White"
                                                 FontWeight="Bold" BorderBrush="{x:Null}"
                                                 />
