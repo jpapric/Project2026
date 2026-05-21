@@ -12,7 +12,7 @@ namespace Server.Application.Interfaces
         float GetEnergyConsumed();
         EAF GetEAF();
         void PostEAF(EAF eaf);
-        void Tap();
+        Task Tap();
         Task Reset();
     }
 }

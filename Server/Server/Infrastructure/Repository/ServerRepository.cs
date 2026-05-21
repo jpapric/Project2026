@@ -130,18 +130,22 @@ namespace Server.Infrastructure.Repository
                 throw new Exception($"Greška pri Load_scrap upisu: {ex.Message}");
             }
         }
-        public void Tap()
+        public async Task Tap()
         {
-            string query = "UPDATE L2_TO_PLC " +
-                           "SET TAP = @Tap";
+            string query = "UPDATE L2_TO_PLC SET TAP = @Tap";
 
             using SqlConnection connection = new SqlConnection(_connectionString);
             using SqlCommand command = new SqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@Tap", true);
-
             connection.Open();
             command.ExecuteNonQuery();
+
+            await Task.Delay(500);
+
+            command.Parameters["@Tap"].Value = false;
+            command.ExecuteNonQuery();
+
             connection.Close();
         }
         public async Task Reset()

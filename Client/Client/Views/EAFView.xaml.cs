@@ -1,97 +1,55 @@
-﻿using Client.Models;
-using Client.ViewModel;
+﻿using Client.ViewModel;
 using System;
-using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using static Client.Models.MockModel;
 
 namespace Client.Views
 {
     public partial class EAFView : UserControl
     {
-        private readonly MockViewModel _vm;
-
+        private readonly EAFViewModel _vm;
         private readonly DispatcherTimer _animTimer;
+
         private double _sparkPhase = 0;
         private double _electrodeCurrentY = 10;
-        private const double FillBottomTop = 194.0; 
-        private const double MaxFillHeight = 162.0;
+
         private const double ElRestY = 10.0;
         private const double ElActiveY = 108.0;
         private const double ElHeight = 110.0;
         private const double ElTipH = 16.0;
-
-        private const double MaxWeight = 50.0;
+        private const double MaxFillH = 162.0;
         private const double MaxEnergy = 500.0;
-
-        private readonly ObservableCollection<HistoryEvent> _historyEvents = new ObservableCollection<HistoryEvent>();
-        private readonly ObservableCollection<AlarmEvent> _alarmEvents = new ObservableCollection<AlarmEvent>();
-
-        private bool _wasOverfill;
-        private bool _wasOvertemp;
-        private bool _wasTapError;
-
-        private bool _isConnected = false;
 
         public EAFView()
         {
             InitializeComponent();
 
-            _vm = new MockViewModel();
+            _vm = new EAFViewModel();
             DataContext = _vm;
 
-            HistoryGrid.ItemsSource = _historyEvents;
-            AlarmGrid.ItemsSource = _alarmEvents;
-
-            LoadScrapBtn.Click += (s, e) =>
-            {
-                _vm.TriggerLoadScrap();
-                LogEvent("INFO", "Load scrap commanded (+1 T)");
-            };
-
-            TapBtn.PreviewMouseLeftButtonDown += (s, e) => _vm.SetTap(true);
-            TapBtn.PreviewMouseLeftButtonUp += (s, e) => _vm.SetTap(false);
-            TapBtn.MouseLeave += (s, e) => _vm.SetTap(false);
-
-            TapSlider.ValueChanged += (s, e) =>
-            {
-                _vm.TapAngle = TapSlider.Value;
-                TapAngleLabel.Text = $"{TapSlider.Value:F1}°";
-            };
-
-            CurrentSetpointInput.LostFocus += (s, e) =>
-            {
-                if (double.TryParse(CurrentSetpointInput.Text, out double val))
-                {
-                    _vm.CurrentSetpoint = Math.Max(0, val);
-                    LogEvent("INFO", $"Current setpoint changed to {val:F0} A");
-                }
-            };
-
-            LogEvent("SYSTEM", "EAF Control system started");
+            _vm.StartPolling();
 
             _animTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
-            _animTimer.Tick += OnAnimTick;
+            _animTimer.Tick += (s, e) => DrawFrame();
             _animTimer.Start();
         }
 
-        private void OnAnimTick(object sender, EventArgs e)
+        // ── Draw 
+
+        private void DrawFrame()
         {
             _sparkPhase += 0.18;
-            UpdateMetricCards();
-            UpdateElectrodes();
-            UpdateFurnaceTilt();
-            UpdateMaterialFill();
-            UpdateStatusIndicators();
-            UpdateAlarmBanners();
-            DetectAndLogAlarms();
-            UpdateAlarmTab();
+            DrawMetricCards();
+            DrawElectrodes();
+            DrawFurnaceTilt();
+            DrawMaterialFill();
+            DrawLeds();
+            DrawAlarmBanners();
         }
 
-        private void UpdateMetricCards()
+        private void DrawMetricCards()
         {
             TiltingValue.Text = _vm.ActualTilting.ToString("F1");
             WeightValue.Text = _vm.MaterialWeight.ToString("F1");
@@ -99,7 +57,7 @@ namespace Client.Views
             TempValue.Text = ((int)_vm.ActualTemperature).ToString();
         }
 
-        private void UpdateElectrodes()
+        private void DrawElectrodes()
         {
             bool melting = _vm.ActualCurrent > 0;
             double targetY = melting ? ElActiveY : ElRestY;
@@ -112,30 +70,15 @@ namespace Client.Views
             double sparkY = tipY + ElTipH + 2;
 
             Canvas.SetTop(Electrode1, _electrodeCurrentY);
-            ElTip1.Points = new System.Windows.Media.PointCollection
-                            {
-                                new System.Windows.Point(148, tipY),
-                                new System.Windows.Point(166, tipY),
-                                new System.Windows.Point(157, tipY + ElTipH)
-                            };
+            ElTip1.Points = new PointCollection { new Point(148, tipY), new Point(166, tipY), new Point(157, tipY + ElTipH) };
             Canvas.SetTop(Spark1, sparkY);
 
             Canvas.SetTop(Electrode2, _electrodeCurrentY);
-            ElTip2.Points = new System.Windows.Media.PointCollection
-                            {
-                                new System.Windows.Point(271, tipY),
-                                new System.Windows.Point(289, tipY),
-                                new System.Windows.Point(280, tipY + ElTipH)
-                            };
+            ElTip2.Points = new PointCollection { new Point(271, tipY), new Point(289, tipY), new Point(280, tipY + ElTipH) };
             Canvas.SetTop(Spark2, sparkY);
 
             Canvas.SetTop(Electrode3, _electrodeCurrentY);
-            ElTip3.Points = new System.Windows.Media.PointCollection
-                            {
-                                new System.Windows.Point(394, tipY),
-                                new System.Windows.Point(412, tipY),
-                                new System.Windows.Point(403, tipY + ElTipH)
-                            };
+            ElTip3.Points = new PointCollection { new Point(394, tipY), new Point(412, tipY), new Point(403, tipY + ElTipH) };
             Canvas.SetTop(Spark3, sparkY);
 
             if (melting)
@@ -152,32 +95,35 @@ namespace Client.Views
             }
         }
 
-        private void UpdateFurnaceTilt()
+        private void DrawFurnaceTilt()
         {
             FurnaceTilt.Angle = _vm.ActualTilting;
         }
 
-        private void UpdateMaterialFill()
+        private void DrawMaterialFill()
         {
-            double fraction = Math.Max(0, Math.Min(1, _vm.MaterialWeight / MaxWeight));
-            double fillHeight = fraction * MaxFillHeight;
+            double fraction = Math.Max(0, Math.Min(1, _vm.MaterialWeight / 50.0));
+            double fillHeight = fraction * MaxFillH;
+            double translateY = 195.0 - fillHeight;
 
-            MaterialFill.Height = fillHeight;
-            Canvas.SetTop(MaterialFill, FillBottomTop - fillHeight);
+            MaterialFill.Opacity = fraction > 0.01 ? 0.92 : 0;
+            MaterialFill.RenderTransform = new TranslateTransform(0, translateY);
 
-
-            Canvas.SetTop(WeightOverlay,
-                Math.Max(FillBottomTop - fillHeight + 6, FillBottomTop - 28));
+            Canvas.SetTop(WeightOverlay, Math.Max(translateY + 6, 195 - 28));
             WeightOverlay.Text = $"{_vm.MaterialWeight:F1} T  |  {fraction * 100:F0}%";
 
-            double energyPct = Math.Min(100, (_vm.EnergyConsumed / MaxEnergy) * 100);
-            EnergyBar.Value = energyPct;
+            double pct = Math.Min(100, (_vm.EnergyConsumed / MaxEnergy) * 100);
+            EnergyBar.Value = pct;
             EnergyLabel.Text = $"{_vm.EnergyConsumed:F0} kWh";
-            EnergyPctLabel.Text = $"{energyPct:F0}%";
+            EnergyPctLabel.Text = $"{pct:F0}%";
         }
 
-        private void UpdateStatusIndicators()
+        private void DrawLeds()
         {
+            LedPlc.Fill = _vm.IsConnected
+                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
+                : new SolidColorBrush(Color.FromRgb(244, 67, 54));
+
             LedScrap.Fill = _vm.ScrapLoading
                 ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
                 : new SolidColorBrush(Color.FromRgb(68, 68, 68));
@@ -190,7 +136,7 @@ namespace Client.Views
             LoadScrapBtn.Opacity = _vm.FurnaceOverfill ? 0.4 : 1.0;
         }
 
-        private void UpdateAlarmBanners()
+        private void DrawAlarmBanners()
         {
             OverfillBanner.Visibility = _vm.FurnaceOverfill ? Visibility.Visible : Visibility.Collapsed;
             OvertempBanner.Visibility = _vm.FurnaceOvertemperature ? Visibility.Visible : Visibility.Collapsed;
@@ -198,106 +144,43 @@ namespace Client.Views
             EmptyBanner.Visibility = _vm.FurnaceEmpty ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private void DetectAndLogAlarms()
+        // ── Button handlers 
+
+        private void LoadScrapBtn_Click(object sender, RoutedEventArgs e)
+            => _vm.LoadScrapCommand.Execute(null);
+
+        private void TapBtn_Click(object sender, RoutedEventArgs e)
+            => _vm.TapCommand.Execute(null);
+
+        private void SetCurrentBtn_Click(object sender, RoutedEventArgs e)
         {
-            if (_vm.FurnaceOverfill && !_wasOverfill)
-                LogAlarm("FURNACE OVERFILL", "Material weight exceeds 50 T capacity");
-
-            if (_vm.FurnaceOvertemperature && !_wasOvertemp)
-                LogAlarm("OVERTEMPERATURE", "Furnace temperature above safe limit");
-
-            if (_vm.TappingError && !_wasTapError)
-                LogAlarm("TAPPING ERROR", "Tap commanded but furnace is empty");
-
-            _wasOverfill = _vm.FurnaceOverfill;
-            _wasOvertemp = _vm.FurnaceOvertemperature;
-            _wasTapError = _vm.TappingError;
+            if (float.TryParse(CurrentSetpointInput.Text, out float val))
+                _vm.CurrentSetpoint = Math.Max(0, val);
+            _vm.SetCurrentCommand.Execute(null);
         }
 
-        private void UpdateAlarmTab()
+        private void TapSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            var red = new SolidColorBrush(Color.FromRgb(244, 67, 54));
-            var gray = new SolidColorBrush(Color.FromRgb(68, 68, 68));
-
-            AlarmLedOverfill.Fill = _vm.FurnaceOverfill ? red : gray;
-            AlarmLedOvertemp.Fill = _vm.FurnaceOvertemperature ? red : gray;
-            AlarmLedTapError.Fill = _vm.TappingError ? red : gray;
-
-            int activeCount = 0;
-            foreach (var a in _alarmEvents)
-                if (a.Status == "ACTIVE") activeCount++;
-
-            AlarmCountText.Text = activeCount.ToString();
-            AlarmCountBadge.Background = activeCount > 0
-                ? new SolidColorBrush(Color.FromRgb(204, 34, 34))
-                : new SolidColorBrush(Color.FromRgb(68, 68, 68));
-        }
- 
-
-        private void LogEvent(string type, string description)
-        {
-            var ev = new HistoryEvent
-            {
-                Timestamp = DateTime.Now,
-                EventType = type,
-                EventDescription = description,
-                IsAlarm = type == "ALARM"
-            };
-
-            _historyEvents.Insert(0, ev);
-
-            HistTotalEvents.Text = _historyEvents.Count.ToString();
-            int alarmCount = 0;
-            foreach (var e in _historyEvents) if (e.IsAlarm) alarmCount++;
-            HistAlarmCount.Text = alarmCount.ToString();
-            HistLastTime.Text = DateTime.Now.ToString("HH:mm:ss");
-        }
-
-        private void LogAlarm(string name, string description)
-        {
-            _alarmEvents.Insert(0, new AlarmEvent
-            {
-                Timestamp = DateTime.Now,
-                AlarmName = name,
-                Description = description,
-                Status = "ACTIVE"
-            });
-
-            LogEvent("ALARM", $"{name} — {description}");
-        }
-
-        private void ClearHistoryBtn_Click(object sender, RoutedEventArgs e)
-        {
-            _historyEvents.Clear();
-            HistTotalEvents.Text = "0";
-            HistAlarmCount.Text = "0";
-            HistLastTime.Text = "—";
-        }
-
-        private void AckAllBtn_Click(object sender, RoutedEventArgs e)
-        {
-            foreach (var alarm in _alarmEvents)
-                alarm.Status = "ACKNOWLEDGED";
-
-            AlarmGrid.Items.Refresh();
+            if (TapAngleLabel == null) return;
+            TapAngleLabel.Text = $"{TapSlider.Value:F1}°";
+            _vm.TapAngleSetpoint = (float)TapSlider.Value;
+            _vm.SetAngleCommand.Execute(null);
         }
 
         private void ResetBtn_Click(object sender, RoutedEventArgs e)
         {
-            _vm.TriggerReset();
+            _vm.ResetCommand.Execute(null);
             TapSlider.Value = 0;
             CurrentSetpointInput.Text = "0";
-            LogEvent("SYSTEM", "Simulator reset");
         }
 
-        private void SetCurrentBtn_Click(object sender, RoutedEventArgs e)
-        {
-            if (double.TryParse(CurrentSetpointInput.Text, out double val))
-            {
-                _vm.CurrentSetpoint = Math.Max(0, val);
-                LogEvent("INFO", $"Current setpoint set to {val:F0} A");
-            }
-        }
+        // ── Stub handlers for other tabs (not your part yet) 
+
+        private void AckAllBtn_Click(object sender, RoutedEventArgs e) { }
+        private void ConnectBtn_Click(object sender, RoutedEventArgs e) { }
+        private void DisconnectBtn_Click(object sender, RoutedEventArgs e) { }
+
+        // ── Navigation 
 
         private void ShowPage(Grid page)
         {
@@ -315,28 +198,15 @@ namespace Client.Views
         }
 
         private void ProcessBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ShowPage(ProcessPage);
-            ProcessBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray");
-        }
+        { ShowPage(ProcessPage); ProcessBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray"); }
 
         private void ConnectionBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ShowPage(ConnectionPage);
-            ConnectionBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray");
-        }
+        { ShowPage(ConnectionPage); ConnectionBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray"); }
 
         private void HistoryBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ShowPage(HistoryPage);
-            HistoryBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray");
-        }
+        { ShowPage(HistoryPage); HistoryBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray"); }
 
         private void AlarmsBtn_Click(object sender, RoutedEventArgs e)
-        {
-            ShowPage(AlarmsPage);
-            AlarmsBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray");
-        }
-
+        { ShowPage(AlarmsPage); AlarmsBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray"); }
     }
 }

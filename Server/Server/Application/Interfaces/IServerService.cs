@@ -13,9 +13,9 @@ namespace Server.Application.Interfaces
         float GetEnergyConsumed();
         EAFDto GetEAF();
         void PostEAF(EAFDto eafDto);
-        void LoadScrap();
-        void Tap();
-        void Reset();
+        Task LoadScrap();
+        Task Tap();
+        Task Reset();
 
     }
 }

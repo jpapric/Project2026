@@ -352,7 +352,7 @@
                                     <Slider x:Name="TapSlider" Minimum="0" Maximum="15"
                                             Value="0" Foreground="#00E5A0"
                                             VerticalAlignment="Center"
-                                            />
+                                            ValueChanged="TapSlider_ValueChanged"/>
                                     <TextBlock x:Name="TapAngleLabel" Grid.Column="1"
                                                Text="0.0°" Foreground="#00E5A0"
                                                FontSize="12" VerticalAlignment="Center"
@@ -386,13 +386,13 @@
                                         Content="LOAD SCRAP  (+1 TON)"
                                         Style="{StaticResource ActionBtn}"
                                         Background="#1F5F2C"
-                                        />
+                                        Click="LoadScrapBtn_Click"/>
 
                                 <Button x:Name="TapBtn"
                                         Content="TAP"
                                         Style="{StaticResource ActionBtn}"
                                         Background="#CC5500"
-                                       />
+                                        Click="TapBtn_Click"/>
 
                                 <Button Content="RESET" Click="ResetBtn_Click"                                       
                                         Style="{StaticResource ActionBtn}"
@@ -448,7 +448,8 @@
                                             <ColumnDefinition Width="12"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
-                                        <Button Content="CONNECT" Height="44"
+                                        <Button x:Name="ConnectBtn" Grid.Column="0"
+                                            Content="CONNECT" Height="44"
                                                 Background="#1F5F2C" Foreground="White"
                                                 FontWeight="Bold" BorderBrush="{x:Null}"
                                                 />
@@ -493,7 +494,7 @@
                                     Content="CLEAR LOG" Height="34" Padding="16,0"
                                     Background="#333333" Foreground="#AAAAAA"
                                     FontWeight="Bold" FontSize="11" BorderBrush="{x:Null}"
-                                    Click="ClearHistoryBtn_Click"/>
+                                    />
                         </Grid>
 
                         <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,16">

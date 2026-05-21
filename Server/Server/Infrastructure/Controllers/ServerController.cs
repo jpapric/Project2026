@@ -176,47 +176,38 @@ namespace Server.Infrastructure.Controllers
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult LoadScrap()
+        public async Task<IActionResult> LoadScrap()
         {
             try
             {
-                _service.LoadScrap();
+                await _service.LoadScrap();
                 return Ok();
             }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            catch (Exception ex) { return Problem(ex.Message); }
         }
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult Tap()
+        public async Task<IActionResult> Tap()
         {
             try
             {
-                _service.Tap();
+                await _service.Tap();
                 return Ok();
             }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            catch (Exception ex) { return Problem(ex.Message); }
         }
 
         [HttpPost]
         [Route("[action]")]
-        public IActionResult Reset()
+        public async Task<IActionResult> Reset()
         {
             try
             {
-                _service.Reset();
+                await _service.Reset();
                 return Ok();
             }
-            catch (Exception ex)
-            {
-                return Problem(ex.Message);
-            }
+            catch (Exception ex) { return Problem(ex.Message); }
         }
 
         [HttpPost]
