@@ -42,12 +42,9 @@ namespace Client.ViewModel
         private bool _furnaceEmpty;
         private bool _furnaceOvertemperature;
 
-<<<<<<< HEAD
-=======
         private bool _backendConnected;
         private bool _manuallyDisconnected = false;
 
->>>>>>> fd9245c (add led indicators functionality fixed)
         #endregion
 
         #region PLC Data Properties
