@@ -77,17 +77,17 @@ namespace Server.Application.Services
                                      eafDto.Furnace_empty, eafDto.Furnace_overtemperature);
             _repository.PostEAF(eaf);
         }
-        public void LoadScrap()
+        public async Task LoadScrap()
         {
-            _repository.LoadScrap();
+            await _repository.LoadScrap();
         }
-        public void Tap()
+        public async Task Tap()
         {
-            _repository.Tap();
+            await _repository.Tap();
         }
-        public void Reset()
+        public async Task Reset()
         {
-            _repository.Reset();
+            await _repository.Reset();
         }
     }
 }

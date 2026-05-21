@@ -266,6 +266,7 @@ namespace Client.ViewModel
                     ActualTemperature = Math.Max(20, ActualTemperature - 0.5);
             }
 
+  
             //  Alarms 
             FurnaceOverfill = MaterialWeight >= 50;
             FurnaceEmpty = MaterialWeight <= 0.05;

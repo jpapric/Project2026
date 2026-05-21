@@ -113,7 +113,7 @@ namespace Server.Infrastructure.BackgroundServices
                         var repository = scope.ServiceProvider.GetRequiredService<IServerRepository>();
                         repository.PostEAF(furnaceData);
                         watch.Stop();
-                        _logger.LogInformation($"Sending speed {watch.ElapsedMilliseconds}");
+                        //_logger.LogInformation($"Sending speed {watch.ElapsedMilliseconds}");
 
                 }
                     catch (Exception ex)
