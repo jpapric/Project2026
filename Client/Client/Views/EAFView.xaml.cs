@@ -19,7 +19,7 @@ namespace Client.Views
         private const double ElActiveY = 108.0;
         private const double ElHeight = 110.0;
         private const double ElTipH = 16.0;
-        private const double MaxFillH = 162.0;
+        private const double MaxFillH = 173.0;
         private const double MaxEnergy = 500.0;
 
         public EAFView()
@@ -35,8 +35,6 @@ namespace Client.Views
             _animTimer.Tick += (s, e) => DrawFrame();
             _animTimer.Start();
         }
-
-        // ── Draw 
 
         private void DrawFrame()
         {
@@ -144,8 +142,6 @@ namespace Client.Views
             EmptyBanner.Visibility = _vm.FurnaceEmpty ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        // ── Button handlers 
-
         private void LoadScrapBtn_Click(object sender, RoutedEventArgs e)
             => _vm.LoadScrapCommand.Execute(null);
 
@@ -173,14 +169,6 @@ namespace Client.Views
             TapSlider.Value = 0;
             CurrentSetpointInput.Text = "0";
         }
-
-        // ── Stub handlers for other tabs (not your part yet) 
-
-        private void AckAllBtn_Click(object sender, RoutedEventArgs e) { }
-        private void ConnectBtn_Click(object sender, RoutedEventArgs e) { }
-        private void DisconnectBtn_Click(object sender, RoutedEventArgs e) { }
-
-        // ── Navigation 
 
         private void ShowPage(Grid page)
         {

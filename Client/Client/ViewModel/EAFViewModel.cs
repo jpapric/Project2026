@@ -34,18 +34,108 @@ namespace Client.ViewModel
         private bool _tappingError;
         private bool _furnaceEmpty;
         private bool _furnaceOvertemperature;
+        #endregion
 
-        public bool ScrapLoading { get => _scrapLoading; set { _scrapLoading = value; OnPropertyChanged(); } }
-        public bool TappingActive { get => _tappingActive; set { _tappingActive = value; OnPropertyChanged(); } }
-        public float ActualTilting { get => _actualTilting; set { _actualTilting = value; OnPropertyChanged(); } }
-        public float MaterialWeight { get => _materialWeight; set { _materialWeight = value; OnPropertyChanged(); } }
-        public float ActualCurrent { get => _actualCurrent; set { _actualCurrent = value; OnPropertyChanged(); } }
-        public float EnergyConsumed { get => _energyConsumed; set { _energyConsumed = value; OnPropertyChanged(); } }
-        public float ActualTemperature { get => _actualTemperature; set { _actualTemperature = value; OnPropertyChanged(); } }
-        public bool FurnaceOverfill { get => _furnaceOverfill; set { _furnaceOverfill = value; OnPropertyChanged(); } }
-        public bool TappingError { get => _tappingError; set { _tappingError = value; OnPropertyChanged(); } }
-        public bool FurnaceEmpty { get => _furnaceEmpty; set { _furnaceEmpty = value; OnPropertyChanged(); } }
-        public bool FurnaceOvertemperature { get => _furnaceOvertemperature; set { _furnaceOvertemperature = value; OnPropertyChanged(); } }
+        #region Properties
+        public bool ScrapLoading 
+        { 
+            get => _scrapLoading; 
+            set 
+            { 
+                _scrapLoading = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public bool TappingActive 
+        { 
+            get => _tappingActive; 
+            set 
+            { 
+                _tappingActive = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public float ActualTilting 
+        { 
+            get => _actualTilting; 
+            set 
+            { 
+                _actualTilting = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public float MaterialWeight 
+        { 
+            get => _materialWeight; 
+            set 
+            { 
+                _materialWeight = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public float ActualCurrent 
+        { 
+            get => _actualCurrent; 
+            set 
+            { 
+                _actualCurrent = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public float EnergyConsumed 
+        { 
+            get => _energyConsumed; 
+            set 
+            { 
+                _energyConsumed = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public float ActualTemperature 
+        { 
+            get => _actualTemperature; 
+            set 
+            { 
+                _actualTemperature = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public bool FurnaceOverfill 
+        { 
+            get => _furnaceOverfill; 
+            set 
+            { 
+                _furnaceOverfill = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public bool TappingError 
+        { 
+            get => _tappingError; 
+            set 
+            { 
+                _tappingError = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public bool FurnaceEmpty 
+        { 
+            get => _furnaceEmpty; 
+            set 
+            { 
+                _furnaceEmpty = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public bool FurnaceOvertemperature 
+        { 
+            get => _furnaceOvertemperature; 
+            set 
+            { 
+                _furnaceOvertemperature = value; 
+                OnPropertyChanged(); 
+            } 
+        }
 
         #endregion
 
@@ -54,8 +144,24 @@ namespace Client.ViewModel
         private float _currentSetpoint;
         private float _tapAngleSetpoint;
 
-        public float CurrentSetpoint { get => _currentSetpoint; set { _currentSetpoint = value; OnPropertyChanged(); } }
-        public float TapAngleSetpoint { get => _tapAngleSetpoint; set { _tapAngleSetpoint = value; OnPropertyChanged(); } }
+        public float CurrentSetpoint 
+        { 
+            get => _currentSetpoint; 
+            set 
+            { 
+                _currentSetpoint = value; 
+                OnPropertyChanged(); 
+            } 
+        }
+        public float TapAngleSetpoint 
+        { 
+            get => _tapAngleSetpoint; 
+            set 
+            { 
+                _tapAngleSetpoint = value; 
+                OnPropertyChanged(); 
+            } 
+        }
 
         #endregion
 

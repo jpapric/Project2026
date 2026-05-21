@@ -181,6 +181,7 @@ namespace Server.Infrastructure.Controllers
             try
             {
                 await _service.LoadScrap();
+                _plcConnection.WriteBool("load_scrap", true);  
                 return Ok();
             }
             catch (Exception ex) { return Problem(ex.Message); }

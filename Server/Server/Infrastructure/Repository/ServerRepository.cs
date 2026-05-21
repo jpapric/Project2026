@@ -1,10 +1,12 @@
-﻿using System.Security.Principal;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Server.Application.Interfaces;
 using Server.Domain;
+using Server.Infrastructure.BackgroundServices;
+using System.Security.Principal;
 using System.Security.Principal;
 using static Server.Domain.Plc;
+using static Server.Infrastructure.BackgroundServices.PlcConnection;
 
 namespace Server.Infrastructure.Repository
 {
@@ -118,6 +120,8 @@ namespace Server.Infrastructure.Repository
                 connection.Open();
 
                 command.Parameters.AddWithValue("@Load_scrap", true);
+
+
                 command.ExecuteNonQuery();
 
                 await Task.Delay(500);
