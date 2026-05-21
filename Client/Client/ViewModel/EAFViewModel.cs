@@ -42,6 +42,8 @@ namespace Client.ViewModel
         private bool _furnaceEmpty;
         private bool _furnaceOvertemperature;
 
+        private bool _backendConnected;
+
         #endregion
 
         #region PLC Data Properties
@@ -154,6 +156,12 @@ namespace Client.ViewModel
                 _furnaceOvertemperature = value;
                 OnPropertyChanged();
             }
+        }
+
+        public bool BackendConnected
+        {
+            get => _backendConnected;
+            set { _backendConnected = value; OnPropertyChanged(); }
         }
 
         #endregion
@@ -278,6 +286,7 @@ namespace Client.ViewModel
                 {
                     IsConnected = false;
                     ConnectionStatus = "No data";
+                    BackendConnected = false;
                     return;
                 }
 
@@ -297,11 +306,13 @@ namespace Client.ViewModel
 
                 IsConnected = true;
                 ConnectionStatus = "Connected";
+                BackendConnected = true;
             }
             catch (Exception ex)
             {
                 IsConnected = false;
                 ConnectionStatus = $"Error: {ex.Message}";
+                BackendConnected = false;
             }
         }
         private async Task RefreshEventsAsync()

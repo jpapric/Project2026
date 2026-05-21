@@ -98,12 +98,12 @@
                                    HorizontalAlignment="Center" Margin="0,5,0,0"/>
                     </StackPanel>
                     <StackPanel Margin="20,0">
-                        <Ellipse Width="14" Height="14" Fill="#4CAF50"/>
+                        <Ellipse x:Name="LedBackend" Width="14" Height="14" Fill="#4CAF50"/>
                         <TextBlock Text="BACKEND" Foreground="#CFCFCF" FontSize="11"
                                    HorizontalAlignment="Center" Margin="0,5,0,0"/>
                     </StackPanel>
                     <StackPanel Margin="20,0">
-                        <Ellipse Width="14" Height="14" Fill="#FF9800"/>
+                        <Ellipse x:Name="LedDatabase" Width="14" Height="14" Fill="#FF9800"/>
                         <TextBlock Text="DATABASE" Foreground="#CFCFCF" FontSize="11"
                                    HorizontalAlignment="Center" Margin="0,5,0,0"/>
                     </StackPanel>
@@ -115,7 +115,7 @@
                         <TextBlock x:Name="PlcAddressText"
                                    Text="192.168.0.1 | Rack 0 | Slot 1"
                                    Foreground="#DDDDDD" FontSize="12"/>
-                        <TextBlock Text="CPU: S7-1500" Foreground="#00BFFF"
+                        <TextBlock x:Name="CpuText" Text="CPU: S7-1500" Foreground="#00BFFF"
                                    FontSize="12" Margin="0,3,0,0"/>
                     </StackPanel>
                 </Border>

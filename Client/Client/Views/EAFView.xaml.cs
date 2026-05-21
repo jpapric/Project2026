@@ -1,6 +1,7 @@
 ﻿using Client.Models;
 using Client.ViewModel;
 using System;
+using System.Runtime.Remoting.Contexts;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -31,7 +32,6 @@ namespace Client.Views
             _vm = new EAFViewModel();
             DataContext = _vm;
 
-            _vm.StartPolling();
             Loaded += async (s, e) => await LoadPlcConfig();
 
             _animTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
@@ -135,6 +135,14 @@ namespace Client.Views
 
             LoadScrapBtn.IsEnabled = !_vm.FurnaceOverfill;
             LoadScrapBtn.Opacity = _vm.FurnaceOverfill ? 0.4 : 1.0;
+
+            LedBackend.Fill = _vm.BackendConnected
+                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
+                : new SolidColorBrush(Color.FromRgb(244, 67, 54));
+
+            LedDatabase.Fill = _vm.IsConnected
+                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
+                : new SolidColorBrush(Color.FromRgb(244, 67, 54));
         }
 
         private void DrawAlarmBanners()
@@ -203,15 +211,16 @@ namespace Client.Views
                 Slot = int.TryParse(slot, out int s) ? s : 1,
                 Cpu = cpu
             };
-
             try
             {
-                await Task.Delay(1000); 
+                await Task.Delay(1000);
                 _vm.UpdatePlcCommand.Execute(plcDto);
+                _vm.StartPolling(); 
 
                 ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(76, 175, 80));
                 ConnStatusText.Text = "Connected";
                 PlcAddressText.Text = $"{ip} | Rack {rack} | Slot {slot}";
+                CpuText.Text = $"CPU: {cpuString}";
                 ConnectBtn.IsEnabled = false;
                 DisconnectBtn.IsEnabled = true;
             }
@@ -225,11 +234,22 @@ namespace Client.Views
 
         private void DisconnectBtn_Click(object sender, RoutedEventArgs e)
         {
-            ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(244, 67, 54));
-            ConnStatusText.Text = "Not connected";
-            ConnectBtn.IsEnabled = true;
-            DisconnectBtn.IsEnabled = false;
-            PlcAddressText.Text = "Not connected";
+            _vm.StopPolling();
+
+            Task.Delay(200).ContinueWith(_ =>
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    _vm.IsConnected = false;
+                    _vm.BackendConnected = false;
+
+                    ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(244, 67, 54));
+                    ConnStatusText.Text = "Not connected";
+                    ConnectBtn.IsEnabled = true;
+                    DisconnectBtn.IsEnabled = false;
+                    PlcAddressText.Text = "Not connected";
+                });
+            });
         }
 
         private async Task LoadPlcConfig()

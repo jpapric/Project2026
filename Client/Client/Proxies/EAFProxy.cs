@@ -117,5 +117,15 @@ namespace Client.Proxies
             var response = await _httpClient.PostAsync("Event_detection", null);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task<bool> PingBackendAsync()
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync("GetPlc");
+                return response.IsSuccessStatusCode;
+            }
+            catch { return false; }
+        }
     }
 }

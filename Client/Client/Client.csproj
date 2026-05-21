@@ -68,7 +68,6 @@
     <Compile Include="Models\PLCDto.cs" />
     <Compile Include="Proxies\EAFProxy.cs" />
     <Compile Include="ViewModel\EAFViewModel.cs" />
-    <Compile Include="ViewModel\PlcConnectionViewModel.cs" />
     <Compile Include="Views\EAFView.xaml.cs">
       <DependentUpon>EAFView.xaml</DependentUpon>
     </Compile>
