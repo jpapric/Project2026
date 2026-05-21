@@ -14,5 +14,8 @@ namespace Server.Application.Interfaces
         void PostEAF(EAF eaf);
         Task Tap();
         Task Reset();
+        List<Event> GetEvents();
+        void PostEvent(string name, string type, DateTime time);
+        void Event_detection();
     }
 }

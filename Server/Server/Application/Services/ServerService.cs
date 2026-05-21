@@ -89,6 +89,17 @@ namespace Server.Application.Services
         {
             await _repository.Reset();
         }
+        public List<EventDto> GetEvents()
+        {
+            
+            List<Event> events = _repository.GetEvents();
+            return events.Select(e => ApplicationFactory.GetEventDtoFromDomain(e)).ToList();
+ 
+        }
+        public void Event_detection()
+        {
+            _repository.Event_detection();
+        }
     }
 }
 

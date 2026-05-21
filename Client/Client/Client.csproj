@@ -64,6 +64,8 @@
     </ApplicationDefinition>
     <Compile Include="Helpers\AsyncCommand.cs" />
     <Compile Include="Models\EAFDto.cs" />
+    <Compile Include="Models\EventDto.cs" />
+    <Compile Include="Models\MockModel.cs" />
     <Compile Include="Models\PLCDto.cs" />
     <Compile Include="Proxies\EAFProxy.cs" />
     <Compile Include="ViewModel\EAFViewModel.cs" />

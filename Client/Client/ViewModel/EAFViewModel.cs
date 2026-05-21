@@ -1,12 +1,14 @@
-﻿using Client.Helpers;
-using Client.Models;
-using Client.Proxies;
-using System;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Client.Helpers;
+using Client.Models;
+using Client.Proxies;
 
 namespace Client.ViewModel
 {
@@ -210,6 +212,18 @@ namespace Client.ViewModel
 
         #endregion
 
+        #region History
+
+        private ObservableCollection<EventDto> _events = new ObservableCollection<EventDto>();
+
+        public ObservableCollection<EventDto> Events
+        {
+            get => _events;
+            set { _events = value; OnPropertyChanged(); }
+        }
+
+        #endregion
+
         #region Commands
 
         public ICommand LoadScrapCommand { get; }
@@ -277,6 +291,8 @@ namespace Client.ViewModel
                 FurnaceEmpty = data.Furnace_empty;
                 FurnaceOvertemperature = data.Furnace_overtemperature;
 
+                await RefreshEventsAsync();
+
                 IsConnected = true;
                 ConnectionStatus = "Connected";
             }
@@ -285,6 +301,17 @@ namespace Client.ViewModel
                 IsConnected = false;
                 ConnectionStatus = $"Error: {ex.Message}";
             }
+        }
+        private async Task RefreshEventsAsync()
+        {
+            try
+            {
+                var events = await _proxy.GetEventsAsync();
+                if (events == null) return;
+
+                Events = new ObservableCollection<EventDto>(events);
+            }
+            catch { }
         }
 
         #endregion

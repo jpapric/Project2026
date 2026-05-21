@@ -1,11 +1,13 @@
 ﻿using Client.Models;
 using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Client.Models;
 
 namespace Client.Proxies
 {
@@ -99,6 +101,20 @@ namespace Client.Proxies
             string json = Newtonsoft.Json.JsonConvert.SerializeObject(plc);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await _httpClient.PostAsync("UpdatePlc", content);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task<List<EventDto>> GetEventsAsync()
+        {
+            var response = await _httpClient.GetAsync("GetEvents");
+            response.EnsureSuccessStatusCode();
+            string json = await response.Content.ReadAsStringAsync();
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<List<EventDto>>(json);
+        }
+
+        public async Task EventDetectionAsync()
+        {
+            var response = await _httpClient.PostAsync("Event_detection", null);
             response.EnsureSuccessStatusCode();
         }
     }
