@@ -1,9 +1,14 @@
 ﻿using Client.Models;
 using System;
+<<<<<<< HEAD
+=======
+using System.Collections.Generic;
+>>>>>>> FrontendBackendWorkFlow721
 using System.Configuration;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Client.Proxies
 {
@@ -27,6 +32,26 @@ namespace Client.Proxies
             string json = await response.Content.ReadAsStringAsync();
             return Newtonsoft.Json.JsonConvert.DeserializeObject<EAFDto>(json);
         }
+        public async Task<PLCDto> GetPlc()
+        {
+            var response = await _httpClient.GetAsync("GetPlc");
+            response.EnsureSuccessStatusCode();
+
+            string json = await response.Content.ReadAsStringAsync();
+            PLCDto result = JsonConvert.DeserializeObject<PLCDto>(json);
+
+            return result;
+
+        }
+
+        public async Task UpdatePlc(PLCDto plc)
+        {
+            string json = JsonConvert.SerializeObject(plc);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync("UpdatePlc", content);
+            response.EnsureSuccessStatusCode();
+        }
+
 
         public async Task LoadScrapAsync()
         {

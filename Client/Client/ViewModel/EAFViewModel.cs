@@ -5,7 +5,10 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+<<<<<<< HEAD
 using System.Windows.Input;
+=======
+>>>>>>> FrontendBackendWorkFlow721
 using System.Windows.Threading;
 
 namespace Client.ViewModel
