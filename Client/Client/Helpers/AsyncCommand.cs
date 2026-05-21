@@ -1,19 +1,9 @@
 ﻿using System;
-<<<<<<< HEAD
-using System.Threading.Tasks;
-using System.Windows.Input;
-
-namespace Client.Helpers
-=======
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace WpfApp1.Helpers
->>>>>>> FrontendBackendWorkFlow721
+namespace Client.Helpers
 {
     public class AsyncCommand : ICommand
     {
@@ -23,21 +13,11 @@ namespace WpfApp1.Helpers
         public AsyncCommand(Func<Task> execute)
         {
             _execute = execute;
-<<<<<<< HEAD
-=======
             _isExecuting = false;
->>>>>>> FrontendBackendWorkFlow721
         }
 
         public event EventHandler CanExecuteChanged;
 
-<<<<<<< HEAD
-        public bool CanExecute(object parameter) => !_isExecuting;
-
-        public async void Execute(object parameter)
-        {
-            if (_isExecuting) return;
-=======
         public bool CanExecute(object parameter)
         {
             return !_isExecuting;
@@ -45,14 +25,24 @@ namespace WpfApp1.Helpers
 
         public async void Execute(object parameter)
         {
->>>>>>> FrontendBackendWorkFlow721
+            if (_isExecuting)
+                return;
+
             _isExecuting = true;
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
             try
             {
                 await _execute();
             }
-<<<<<<< HEAD
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"Error: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+            }
             finally
             {
                 _isExecuting = false;
@@ -73,22 +63,33 @@ namespace WpfApp1.Helpers
 
         public event EventHandler CanExecuteChanged;
 
-        public bool CanExecute(object parameter) => !_isExecuting;
+        public bool CanExecute(object parameter)
+        {
+            return !_isExecuting;
+        }
 
         public async void Execute(object parameter)
         {
-            if (_isExecuting) return;
-            if (!(parameter is T typedParam)) return;
+            if (_isExecuting)
+                return;
+
+            if (!(parameter is T typedParam))
+                return;
+
             _isExecuting = true;
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
             try
             {
                 await _execute(typedParam);
-=======
+            }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
->>>>>>> FrontendBackendWorkFlow721
+                MessageBox.Show(
+                    $"Error: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
             }
             finally
             {

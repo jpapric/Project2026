@@ -1,9 +1,6 @@
 ﻿using Client.Models;
 using System;
-<<<<<<< HEAD
-=======
 using System.Collections.Generic;
->>>>>>> FrontendBackendWorkFlow721
 using System.Configuration;
 using System.Net.Http;
 using System.Text;

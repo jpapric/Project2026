@@ -590,7 +590,7 @@
                                     Content="ACK ALL" Height="34" Padding="16,0"
                                     Background="#7A1A1A" Foreground="White"
                                     FontWeight="Bold" FontSize="11" BorderBrush="{x:Null}"
-                                    Click="AckAllBtn_Click"/>
+                                    />
                         </Grid>
 
                         <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,16">
