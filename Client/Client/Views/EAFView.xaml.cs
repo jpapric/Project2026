@@ -32,6 +32,7 @@ namespace Client.Views
             _vm = new EAFViewModel();
             DataContext = _vm;
 
+            _vm.StartPolling();
             Loaded += async (s, e) => await LoadPlcConfig();
 
             _animTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
@@ -121,13 +122,18 @@ namespace Client.Views
 
         private void DrawLeds()
         {
-            LedPlc.Fill = _vm.IsConnected
-                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
-                : new SolidColorBrush(Color.FromRgb(244, 67, 54));
+            var green = new SolidColorBrush(Color.FromRgb(76, 175, 80));
+            var red = new SolidColorBrush(Color.FromRgb(244, 67, 54));
+
+            LedPlc.Fill = _vm.IsConnected ? green : red;
+            LedBackend.Fill = _vm.BackendConnected ? green : red;
+            LedDatabase.Fill = _vm.IsConnected ? green : red;
+
+            ConnStatusLed.Fill = _vm.IsConnected ? green : red;
+            ConnStatusText.Text = _vm.IsConnected ? "Connected" : "Not connected";
 
             LedScrap.Fill = _vm.ScrapLoading
-                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
-                : new SolidColorBrush(Color.FromRgb(68, 68, 68));
+                ? green : new SolidColorBrush(Color.FromRgb(68, 68, 68));
 
             LedTapping.Fill = _vm.TappingActive
                 ? new SolidColorBrush(Color.FromRgb(255, 152, 0))
@@ -135,14 +141,6 @@ namespace Client.Views
 
             LoadScrapBtn.IsEnabled = !_vm.FurnaceOverfill;
             LoadScrapBtn.Opacity = _vm.FurnaceOverfill ? 0.4 : 1.0;
-
-            LedBackend.Fill = _vm.BackendConnected
-                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
-                : new SolidColorBrush(Color.FromRgb(244, 67, 54));
-
-            LedDatabase.Fill = _vm.IsConnected
-                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
-                : new SolidColorBrush(Color.FromRgb(244, 67, 54));
         }
 
         private void DrawAlarmBanners()
@@ -214,11 +212,14 @@ namespace Client.Views
             try
             {
                 await Task.Delay(1000);
+                _vm.ManuallyDisconnected = false;
                 _vm.UpdatePlcCommand.Execute(plcDto);
-                _vm.StartPolling(); 
+                //_vm.StartPolling()
 
-                ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(76, 175, 80));
-                ConnStatusText.Text = "Connected";
+                ConnStatusLed.Fill = _vm.IsConnected
+                    ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
+                    : new SolidColorBrush(Color.FromRgb(244, 67, 54));
+                ConnStatusText.Text = _vm.IsConnected ? "Connected" : "PLC not reachable";
                 PlcAddressText.Text = $"{ip} | Rack {rack} | Slot {slot}";
                 CpuText.Text = $"CPU: {cpuString}";
                 ConnectBtn.IsEnabled = false;
@@ -231,25 +232,16 @@ namespace Client.Views
                 ConnectBtn.IsEnabled = true;
             }
         }
-
         private void DisconnectBtn_Click(object sender, RoutedEventArgs e)
         {
-            _vm.StopPolling();
+            _vm.ManuallyDisconnected = true;
+            _vm.IsConnected = false;
+            _vm.BackendConnected = false;
 
-            Task.Delay(200).ContinueWith(_ =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    _vm.IsConnected = false;
-                    _vm.BackendConnected = false;
-
-                    ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(244, 67, 54));
-                    ConnStatusText.Text = "Not connected";
-                    ConnectBtn.IsEnabled = true;
-                    DisconnectBtn.IsEnabled = false;
-                    PlcAddressText.Text = "Not connected";
-                });
-            });
+            ConnectBtn.IsEnabled = true;
+            DisconnectBtn.IsEnabled = false;
+            PlcAddressText.Text = "Not connected";
+            CpuText.Text = "CPU: —";
         }
 
         private async Task LoadPlcConfig()

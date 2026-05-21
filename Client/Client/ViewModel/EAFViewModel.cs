@@ -43,6 +43,7 @@ namespace Client.ViewModel
         private bool _furnaceOvertemperature;
 
         private bool _backendConnected;
+        private bool _manuallyDisconnected = false;
 
         #endregion
 
@@ -161,7 +162,21 @@ namespace Client.ViewModel
         public bool BackendConnected
         {
             get => _backendConnected;
-            set { _backendConnected = value; OnPropertyChanged(); }
+            set 
+            { 
+                _backendConnected = value; 
+                OnPropertyChanged(); 
+            }
+        }
+
+        public bool ManuallyDisconnected
+        {
+            get => _manuallyDisconnected;
+            set
+            { 
+                _manuallyDisconnected = value; 
+                OnPropertyChanged(); 
+            }
         }
 
         #endregion
@@ -278,6 +293,14 @@ namespace Client.ViewModel
 
         private async Task PollAsync()
         {
+
+            if (_manuallyDisconnected)
+            {
+                IsConnected = false;
+                BackendConnected = false;
+                return;
+            }
+
             try
             {
                 EAFDto data = await _proxy.GetEafDataFromPlcAsync();
