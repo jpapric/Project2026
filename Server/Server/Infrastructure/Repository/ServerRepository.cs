@@ -94,6 +94,7 @@ namespace Server.Infrastructure.Repository
             using SqlCommand command = new SqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@current_setpoint", current);
+            _plcConnection.WriteReal("current_setpoint", current);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -111,6 +112,7 @@ namespace Server.Infrastructure.Repository
             using SqlCommand command = new SqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@angle", angle);
+            _plcConnection.WriteReal("tap_angle", angle);
 
             connection.Open();
             command.ExecuteNonQuery();
@@ -161,7 +163,10 @@ namespace Server.Infrastructure.Repository
             connection.Open();
             command.ExecuteNonQuery();
 
+            _plcConnection.WriteBool("tap", true);
             await Task.Delay(500);
+
+            
 
             command.Parameters["@Tap"].Value = false;
             command.ExecuteNonQuery();
@@ -180,9 +185,9 @@ namespace Server.Infrastructure.Repository
 
             connection.Open();
             command.ExecuteNonQuery();
-
+            _plcConnection.WriteBool("reset", true);
             await Task.Delay(100);
-
+            _plcConnection.WriteBool("reset", false);
             command.Parameters["@Reset"].Value = false;
             command.ExecuteNonQuery();
 

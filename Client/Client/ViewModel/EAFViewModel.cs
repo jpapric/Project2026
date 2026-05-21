@@ -5,10 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-<<<<<<< HEAD
 using System.Windows.Input;
-=======
->>>>>>> FrontendBackendWorkFlow721
 using System.Windows.Threading;
 
 namespace Client.ViewModel
@@ -19,12 +16,17 @@ namespace Client.ViewModel
         private readonly DispatcherTimer _timer;
 
         #region INotifyPropertyChanged
+
         public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
         #endregion
 
-        #region PLC data (read from PLC)
+        #region PLC Data Fields
 
         private bool _scrapLoading;
         private bool _tappingActive;
@@ -37,107 +39,119 @@ namespace Client.ViewModel
         private bool _tappingError;
         private bool _furnaceEmpty;
         private bool _furnaceOvertemperature;
+
         #endregion
 
-        #region Properties
-        public bool ScrapLoading 
-        { 
-            get => _scrapLoading; 
-            set 
-            { 
-                _scrapLoading = value; 
-                OnPropertyChanged(); 
-            } 
+        #region PLC Data Properties
+
+        public bool ScrapLoading
+        {
+            get => _scrapLoading;
+            set
+            {
+                _scrapLoading = value;
+                OnPropertyChanged();
+            }
         }
-        public bool TappingActive 
-        { 
-            get => _tappingActive; 
-            set 
-            { 
-                _tappingActive = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public bool TappingActive
+        {
+            get => _tappingActive;
+            set
+            {
+                _tappingActive = value;
+                OnPropertyChanged();
+            }
         }
-        public float ActualTilting 
-        { 
-            get => _actualTilting; 
-            set 
-            { 
-                _actualTilting = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public float ActualTilting
+        {
+            get => _actualTilting;
+            set
+            {
+                _actualTilting = value;
+                OnPropertyChanged();
+            }
         }
-        public float MaterialWeight 
-        { 
-            get => _materialWeight; 
-            set 
-            { 
-                _materialWeight = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public float MaterialWeight
+        {
+            get => _materialWeight;
+            set
+            {
+                _materialWeight = value;
+                OnPropertyChanged();
+            }
         }
-        public float ActualCurrent 
-        { 
-            get => _actualCurrent; 
-            set 
-            { 
-                _actualCurrent = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public float ActualCurrent
+        {
+            get => _actualCurrent;
+            set
+            {
+                _actualCurrent = value;
+                OnPropertyChanged();
+            }
         }
-        public float EnergyConsumed 
-        { 
-            get => _energyConsumed; 
-            set 
-            { 
-                _energyConsumed = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public float EnergyConsumed
+        {
+            get => _energyConsumed;
+            set
+            {
+                _energyConsumed = value;
+                OnPropertyChanged();
+            }
         }
-        public float ActualTemperature 
-        { 
-            get => _actualTemperature; 
-            set 
-            { 
-                _actualTemperature = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public float ActualTemperature
+        {
+            get => _actualTemperature;
+            set
+            {
+                _actualTemperature = value;
+                OnPropertyChanged();
+            }
         }
-        public bool FurnaceOverfill 
-        { 
-            get => _furnaceOverfill; 
-            set 
-            { 
-                _furnaceOverfill = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public bool FurnaceOverfill
+        {
+            get => _furnaceOverfill;
+            set
+            {
+                _furnaceOverfill = value;
+                OnPropertyChanged();
+            }
         }
-        public bool TappingError 
-        { 
-            get => _tappingError; 
-            set 
-            { 
-                _tappingError = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public bool TappingError
+        {
+            get => _tappingError;
+            set
+            {
+                _tappingError = value;
+                OnPropertyChanged();
+            }
         }
-        public bool FurnaceEmpty 
-        { 
-            get => _furnaceEmpty; 
-            set 
-            { 
-                _furnaceEmpty = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public bool FurnaceEmpty
+        {
+            get => _furnaceEmpty;
+            set
+            {
+                _furnaceEmpty = value;
+                OnPropertyChanged();
+            }
         }
-        public bool FurnaceOvertemperature 
-        { 
-            get => _furnaceOvertemperature; 
-            set 
-            { 
-                _furnaceOvertemperature = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public bool FurnaceOvertemperature
+        {
+            get => _furnaceOvertemperature;
+            set
+            {
+                _furnaceOvertemperature = value;
+                OnPropertyChanged();
+            }
         }
 
         #endregion
@@ -147,23 +161,24 @@ namespace Client.ViewModel
         private float _currentSetpoint;
         private float _tapAngleSetpoint;
 
-        public float CurrentSetpoint 
-        { 
-            get => _currentSetpoint; 
-            set 
-            { 
-                _currentSetpoint = value; 
-                OnPropertyChanged(); 
-            } 
+        public float CurrentSetpoint
+        {
+            get => _currentSetpoint;
+            set
+            {
+                _currentSetpoint = value;
+                OnPropertyChanged();
+            }
         }
-        public float TapAngleSetpoint 
-        { 
-            get => _tapAngleSetpoint; 
-            set 
-            { 
-                _tapAngleSetpoint = value; 
-                OnPropertyChanged(); 
-            } 
+
+        public float TapAngleSetpoint
+        {
+            get => _tapAngleSetpoint;
+            set
+            {
+                _tapAngleSetpoint = value;
+                OnPropertyChanged();
+            }
         }
 
         #endregion
@@ -173,8 +188,25 @@ namespace Client.ViewModel
         private bool _isConnected;
         private string _connectionStatus = "Disconnected";
 
-        public bool IsConnected { get => _isConnected; set { _isConnected = value; OnPropertyChanged(); } }
-        public string ConnectionStatus { get => _connectionStatus; set { _connectionStatus = value; OnPropertyChanged(); } }
+        public bool IsConnected
+        {
+            get => _isConnected;
+            set
+            {
+                _isConnected = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string ConnectionStatus
+        {
+            get => _connectionStatus;
+            set
+            {
+                _connectionStatus = value;
+                OnPropertyChanged();
+            }
+        }
 
         #endregion
 
@@ -196,6 +228,7 @@ namespace Client.ViewModel
             {
                 Interval = TimeSpan.FromMilliseconds(150)
             };
+
             _timer.Tick += async (s, e) => await PollAsync();
 
             LoadScrapCommand = new AsyncCommand(LoadScrap);
@@ -209,8 +242,15 @@ namespace Client.ViewModel
 
         #region Polling
 
-        public void StartPolling() => _timer.Start();
-        public void StopPolling() => _timer.Stop();
+        public void StartPolling()
+        {
+            _timer.Start();
+        }
+
+        public void StopPolling()
+        {
+            _timer.Stop();
+        }
 
         private async Task PollAsync()
         {
@@ -218,12 +258,17 @@ namespace Client.ViewModel
             {
                 EAFDto data = await _proxy.GetEafDataFromPlcAsync();
 
-                if (data == null) { IsConnected = false; ConnectionStatus = "No data"; return; }
+                if (data == null)
+                {
+                    IsConnected = false;
+                    ConnectionStatus = "No data";
+                    return;
+                }
 
                 ScrapLoading = data.Scrap_loading;
                 TappingActive = data.Tapping_active;
                 ActualTilting = data.Actual_tilting;
-                MaterialWeight = data.Material_weight; // /1000f
+                MaterialWeight = data.Material_weight;
                 ActualCurrent = data.Actual_current;
                 EnergyConsumed = data.Energy_consumed;
                 ActualTemperature = data.Actual_temperature;
@@ -244,65 +289,65 @@ namespace Client.ViewModel
 
         #endregion
 
-        #region Command methods
+        #region Command Methods
 
         private async Task LoadScrap()
         {
-            try 
-            { 
-                await _proxy.LoadScrapAsync(); 
+            try
+            {
+                await _proxy.LoadScrapAsync();
             }
-            catch (Exception ex) 
-            { 
-                ConnectionStatus = $"Error: {ex.Message}"; 
+            catch (Exception ex)
+            {
+                ConnectionStatus = $"Error: {ex.Message}";
             }
         }
 
         private async Task Tap()
         {
-            try 
-            { 
-                await _proxy.TapAsync(); 
+            try
+            {
+                await _proxy.TapAsync();
             }
-            catch (Exception ex) 
-            { 
-                ConnectionStatus = $"Error: {ex.Message}"; 
+            catch (Exception ex)
+            {
+                ConnectionStatus = $"Error: {ex.Message}";
             }
         }
 
         private async Task Reset()
         {
-            try 
-            { 
-                await _proxy.ResetAsync(); 
+            try
+            {
+                await _proxy.ResetAsync();
             }
-            catch (Exception ex) 
-            { 
-                ConnectionStatus = $"Error: {ex.Message}"; 
+            catch (Exception ex)
+            {
+                ConnectionStatus = $"Error: {ex.Message}";
             }
         }
 
         private async Task SetCurrent()
         {
-            try 
-            { 
-                await _proxy.SetCurrentAsync(CurrentSetpoint); 
+            try
+            {
+                await _proxy.SetCurrentAsync(CurrentSetpoint);
             }
-            catch (Exception ex) 
-            { 
-                ConnectionStatus = $"Error: {ex.Message}"; 
+            catch (Exception ex)
+            {
+                ConnectionStatus = $"Error: {ex.Message}";
             }
         }
 
         private async Task SetAngle()
         {
-            try 
-            { 
-                await _proxy.SetAngleAsync(TapAngleSetpoint); 
+            try
+            {
+                await _proxy.SetAngleAsync(TapAngleSetpoint);
             }
-            catch (Exception ex) 
-            { 
-                ConnectionStatus = $"Error: {ex.Message}"; 
+            catch (Exception ex)
+            {
+                ConnectionStatus = $"Error: {ex.Message}";
             }
         }
 

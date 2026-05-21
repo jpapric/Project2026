@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml.Linq;
-using WpfApp1.Helpers;
 using static Client.Models.PLCDto;
 using  static Client.Proxies.EAFProxy;
 
