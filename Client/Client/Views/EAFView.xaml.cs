@@ -1,8 +1,5 @@
-﻿using Client.Models;
-using Client.ViewModel;
+﻿using Client.ViewModel;
 using System;
-using System.Runtime.Remoting.Contexts;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -32,7 +29,7 @@ namespace Client.Views
             _vm = new EAFViewModel();
             DataContext = _vm;
 
-            Loaded += async (s, e) => await LoadPlcConfig();
+            _vm.StartPolling();
 
             _animTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(50) };
             _animTimer.Tick += (s, e) => DrawFrame();
@@ -135,14 +132,6 @@ namespace Client.Views
 
             LoadScrapBtn.IsEnabled = !_vm.FurnaceOverfill;
             LoadScrapBtn.Opacity = _vm.FurnaceOverfill ? 0.4 : 1.0;
-
-            LedBackend.Fill = _vm.BackendConnected
-                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
-                : new SolidColorBrush(Color.FromRgb(244, 67, 54));
-
-            LedDatabase.Fill = _vm.IsConnected
-                ? new SolidColorBrush(Color.FromRgb(76, 175, 80))
-                : new SolidColorBrush(Color.FromRgb(244, 67, 54));
         }
 
         private void DrawAlarmBanners()
@@ -179,102 +168,6 @@ namespace Client.Views
             _vm.ResetCommand.Execute(null);
             TapSlider.Value = 0;
             CurrentSetpointInput.Text = "0";
-        }
-
-        private async void ConnectBtn_Click(object sender, RoutedEventArgs e)
-        {
-            string ip = IpInput.Text.Trim();
-            string rack = RackInput.Text.Trim();
-            string slot = SlotInput.Text.Trim();
-
-            if (string.IsNullOrWhiteSpace(ip))
-            {
-                MessageBox.Show("Please enter an IP address.");
-                return;
-            }
-
-            ConnectBtn.IsEnabled = false;
-            ConnStatusText.Text = "Connecting...";
-            ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(255, 152, 0));
-
-            string cpuString = (CpuTypeInput.SelectedItem as ComboBoxItem)?.Content?.ToString();
-            PLCDto.CpuType cpu;
-            if (cpuString == "S7-1200") cpu = PLCDto.CpuType.S71200;
-            else if (cpuString == "S7-400") cpu = PLCDto.CpuType.S7400;
-            else if (cpuString == "S7-300") cpu = PLCDto.CpuType.S7300;
-            else cpu = PLCDto.CpuType.S71500;
-
-            var plcDto = new PLCDto
-            {
-                Ip = ip,
-                Rack = int.TryParse(rack, out int r) ? r : 0,
-                Slot = int.TryParse(slot, out int s) ? s : 1,
-                Cpu = cpu
-            };
-            try
-            {
-                await Task.Delay(1000);
-                _vm.UpdatePlcCommand.Execute(plcDto);
-                _vm.StartPolling(); 
-
-                ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(76, 175, 80));
-                ConnStatusText.Text = "Connected";
-                PlcAddressText.Text = $"{ip} | Rack {rack} | Slot {slot}";
-                CpuText.Text = $"CPU: {cpuString}";
-                ConnectBtn.IsEnabled = false;
-                DisconnectBtn.IsEnabled = true;
-            }
-            catch
-            {
-                ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(244, 67, 54));
-                ConnStatusText.Text = "Connection failed";
-                ConnectBtn.IsEnabled = true;
-            }
-        }
-
-        private void DisconnectBtn_Click(object sender, RoutedEventArgs e)
-        {
-            _vm.StopPolling();
-
-            Task.Delay(200).ContinueWith(_ =>
-            {
-                Dispatcher.Invoke(() =>
-                {
-                    _vm.IsConnected = false;
-                    _vm.BackendConnected = false;
-
-                    ConnStatusLed.Fill = new SolidColorBrush(Color.FromRgb(244, 67, 54));
-                    ConnStatusText.Text = "Not connected";
-                    ConnectBtn.IsEnabled = true;
-                    DisconnectBtn.IsEnabled = false;
-                    PlcAddressText.Text = "Not connected";
-                });
-            });
-        }
-
-        private async Task LoadPlcConfig()
-        {
-            try
-            {
-                var proxy = new Client.Proxies.EAFProxy();
-                PLCDto plc = await proxy.GetPlcAsync();
-                IpInput.Text = plc.Ip;
-                RackInput.Text = plc.Rack.ToString();
-                SlotInput.Text = plc.Slot.ToString();
-
-                string cpuName;
-                if (plc.Cpu == PLCDto.CpuType.S71200) cpuName = "S7-1200";
-                else if (plc.Cpu == PLCDto.CpuType.S7400) cpuName = "S7-400";
-                else if (plc.Cpu == PLCDto.CpuType.S7300) cpuName = "S7-300";
-                else cpuName = "S7-1500";
-
-                foreach (ComboBoxItem item in CpuTypeInput.Items)
-                    if (item.Content.ToString() == cpuName)
-                    { CpuTypeInput.SelectedItem = item; break; }
-            }
-            catch(Exception ex) {
-                MessageBox.Show($"Error loading PLC configuration: {ex.Message}");
-            }
         }
 
         private void ShowPage(Grid page)
