@@ -96,10 +96,7 @@ namespace Server.Application.Services
             return events.Select(e => ApplicationFactory.GetEventDtoFromDomain(e)).ToList();
  
         }
-        public void Event_detection()
-        {
-            _repository.Event_detection();
-        }
+        
     }
 }
 

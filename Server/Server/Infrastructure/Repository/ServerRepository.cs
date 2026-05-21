@@ -163,7 +163,8 @@ namespace Server.Infrastructure.Repository
             connection.Open();
             command.ExecuteNonQuery();
 
-            _plcConnection.WriteBool("tap", true);
+            
+            _plcConnection.WriteBool("tap",true);
             await Task.Delay(500);
 
             
@@ -297,10 +298,8 @@ namespace Server.Infrastructure.Repository
 
         public void PostEvent(string name, string type, DateTime time)
         {
-            string query = "UPDATE EVENTS                          " +
-                           "SET EVENT_NAME = @name                 " +
-                           "SET EVENT_TYPE = @type                 " +
-                           "SET EVENT_TIME = @time                 " ;
+            string query = @"INSERT INTO EVENTS (EVENT_NAME, EVENT_TYPE, EVENT_TIME) 
+                         VALUES (@name, @type, @time)";
 
             using SqlConnection connection = new SqlConnection(_connectionString);
             using SqlCommand command = new SqlCommand(query, connection);
@@ -320,7 +319,7 @@ namespace Server.Infrastructure.Repository
                 List<Event> events = new List<Event>();
                 string query = @"SELECT EVENT_NAME, EVENT_TYPE, EVENT_TIME
                         FROM EVENTS 
-                        ORDER BY Timestamp DESC";
+                        ORDER BY EVENT_TIME DESC";
 
                 using SqlConnection connection = new SqlConnection(_connectionString);
                 using SqlCommand command = new SqlCommand(query, connection);
@@ -343,31 +342,27 @@ namespace Server.Infrastructure.Repository
                 throw new Exception($"Greška pri čitanju evenata: {ex.Message}");
             }
         }
-        public void Event_detection()
+        public void Event_detection(EAF current)
         {
             try
             {
-                string query = @"SELECT TOP 2 Scrap_loading, Tapping_active, Actual_tilting, 
-                Material_weight, Actual_current, Energy_consumed, Actual_temperature, 
-                Furnace_overfill, Tapping_error, Furnace_empty, Furnace_overtemperature
-                FROM PLC_TO_L2
-                ORDER BY Id DESC";
+                string query = @"SELECT TOP 1 Scrap_loading, Tapping_active, Actual_tilting, 
+                                Material_weight, Actual_current, Energy_consumed, Actual_temperature, 
+                                Furnace_overfill, Tapping_error, Furnace_empty, Furnace_overtemperature
+                                FROM PLC_TO_L2
+                                ORDER BY Id DESC";
 
                 using SqlConnection connection = new SqlConnection(_connectionString);
                 using SqlCommand command = new SqlCommand(query, connection);
                 connection.Open();
                 using SqlDataReader reader = command.ExecuteReader();
 
-                EAF current = null;
                 EAF previous = null;
 
                 if (reader.Read())
-                    current = ReadEAFFromReader(reader);  // prvi red = najnoviji
+                    previous = ReadEAFFromReader(reader);
 
-                if (reader.Read())
-                    previous = ReadEAFFromReader(reader); // drugi red = prethodni
-
-                if (current == null || previous == null) return;
+                if (previous == null) return;
 
                 if (!previous.Scrap_loading && current.Scrap_loading)
                     PostEvent("Loading scrap", "Feedback", DateTime.Now);
@@ -409,15 +404,16 @@ namespace Server.Infrastructure.Repository
             return new EAF(
                 reader.GetBoolean(reader.GetOrdinal("Scrap_loading")),
                 reader.GetBoolean(reader.GetOrdinal("Tapping_active")),
-                reader.GetFloat(reader.GetOrdinal("Actual_tilting")),
-                reader.GetFloat(reader.GetOrdinal("Material_weight")),
-                reader.GetFloat(reader.GetOrdinal("Actual_current")),
-                reader.GetFloat(reader.GetOrdinal("Energy_consumed")),
-                reader.GetFloat(reader.GetOrdinal("Actual_temperature")),
+                Convert.ToSingle(reader["Actual_tilting"]),
+                Convert.ToSingle(reader["Material_weight"]),
+                Convert.ToSingle(reader["Actual_current"]),
+                Convert.ToSingle(reader["Energy_consumed"]),
+                Convert.ToSingle(reader["Actual_temperature"]),
                 reader.GetBoolean(reader.GetOrdinal("Furnace_overfill")),
                 reader.GetBoolean(reader.GetOrdinal("Tapping_error")),
                 reader.GetBoolean(reader.GetOrdinal("Furnace_empty")),
                 reader.GetBoolean(reader.GetOrdinal("Furnace_overtemperature"))
+          
             );
         }
 

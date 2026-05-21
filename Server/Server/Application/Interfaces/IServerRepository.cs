@@ -16,6 +16,6 @@ namespace Server.Application.Interfaces
         Task Reset();
         List<Event> GetEvents();
         void PostEvent(string name, string type, DateTime time);
-        void Event_detection();
+        void Event_detection(EAF furnaceData);
     }
 }
