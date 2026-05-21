@@ -1,8 +1,9 @@
-﻿using System.Security.Principal;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Data.SqlClient;
 using Server.Application.Interfaces;
 using Server.Domain;
+using Server.Infrastructure.BackgroundServices;
+using System.Security.Principal;
 using System.Security.Principal;
 using static Server.Domain.Plc;
 
@@ -12,10 +13,18 @@ namespace Server.Infrastructure.Repository
     {
 
         private readonly string _connectionString;
+        private readonly PlcConnection _plcConnection;
 
-        public ServerRepository(IConfiguration configuration)
+        private bool _isLoadingScrap = false;
+
+
+
+
+
+        public ServerRepository(IConfiguration configuration ,PlcConnection plcConnection)
         {
             _connectionString = configuration.GetConnectionString("DbConnectionString");
+            _plcConnection = plcConnection;
         }
 
 
@@ -109,6 +118,7 @@ namespace Server.Infrastructure.Repository
         }
         public async Task LoadScrap()
         {
+           
             try
             {
                 string query = "UPDATE L2_TO_PLC SET Load_scrap = @Load_scrap";
@@ -119,11 +129,17 @@ namespace Server.Infrastructure.Repository
 
                 command.Parameters.AddWithValue("@Load_scrap", true);
                 command.ExecuteNonQuery();
+                _plcConnection.WriteBool("load_scrap", false);
+                await Task.Delay(100);
+                _plcConnection.WriteBool("load_scrap", true);
+
+               
 
                 
-                await Task.Delay(500);
 
+                
                 command.Parameters["@Load_scrap"].Value = false;
+                
                 command.ExecuteNonQuery();
             }
             catch (Exception ex)

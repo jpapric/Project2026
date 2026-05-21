@@ -6,13 +6,13 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
-using static Client.Models.MockModel;
+using static Client.Models.EAFDto;
 
 namespace Client.Views
 {
     public partial class EAFView : UserControl
     {
-        private readonly MockViewModel _vm;
+        private readonly EAFViewModel _vm;
 
         private readonly DispatcherTimer _animTimer;
         private double _sparkPhase = 0;
@@ -40,7 +40,7 @@ namespace Client.Views
         {
             InitializeComponent();
 
-            _vm = new MockViewModel();
+            _vm = new EAFViewModel();
             DataContext = _vm;
 
             HistoryGrid.ItemsSource = _historyEvents;

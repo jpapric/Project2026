@@ -28,7 +28,8 @@ namespace Client.ViewModel
         public ICommand ConnectCommand { get; set; }
 
 
-       
+
+        /*
         public  PlcConnectionViewModel(PLCDto plc)
         {
 
@@ -41,8 +42,10 @@ namespace Client.ViewModel
 
         }
 
-       
-
+       */
+        public PlcConnectionViewModel() {
+            ConnectCommand = new AsyncCommand(Connect);
+        }
         private async Task Connect()
         {
             PLCDto result = new PLCDto

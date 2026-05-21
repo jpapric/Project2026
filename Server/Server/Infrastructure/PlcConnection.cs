@@ -106,7 +106,7 @@ namespace Server.Infrastructure.BackgroundServices
                         var    watch = System.Diagnostics.Stopwatch.StartNew();
                    
 
-                    EAF furnaceData = new EAF();
+                        EAF furnaceData = new EAF();
                         _plc.ReadClass(furnaceData, 301, 0);
                         _cache.Update(furnaceData);
                         using var scope = _scopeFactory.CreateScope();
