@@ -59,5 +59,15 @@ namespace Server.Application
                 Furnace_overtemperature = eaf.Furnace_overtemperature,
             };
         }
+
+        public static EventDto GetEventDtoFromDomain(Event e)
+        {
+            return new EventDto
+            {
+                Name = e.Name,
+                Type = e.Type,
+                Time = e.Time
+            };
+        }
     }
 }

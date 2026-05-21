@@ -2,7 +2,8 @@
 {
     public class EventDto
     {
-        public string name;
-        public string Timestamp;
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public DateTime Time { get; set; }
     }
 }
