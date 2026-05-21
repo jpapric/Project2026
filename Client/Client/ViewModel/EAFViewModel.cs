@@ -231,6 +231,7 @@ namespace Client.ViewModel
         public ICommand ResetCommand { get; }
         public ICommand SetCurrentCommand { get; }
         public ICommand SetAngleCommand { get; }
+        public ICommand UpdatePlcCommand { get; }
 
         #endregion
 
@@ -250,6 +251,7 @@ namespace Client.ViewModel
             ResetCommand = new AsyncCommand(Reset);
             SetCurrentCommand = new AsyncCommand(SetCurrent);
             SetAngleCommand = new AsyncCommand(SetAngle);
+            UpdatePlcCommand = new AsyncCommand<PLCDto>(UpdatePlc);
         }
 
         #endregion
@@ -378,6 +380,13 @@ namespace Client.ViewModel
             }
         }
 
+        private async Task UpdatePlc(PLCDto plcDto)
+        {
+            try { await _proxy.UpdatePlcAsync(plcDto); }
+            catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
+        }
         #endregion
+
+
     }
 }

@@ -455,10 +455,12 @@
                                             Content="CONNECT" Height="44"
                                                 Background="#1F5F2C" Foreground="White"
                                                 FontWeight="Bold" BorderBrush="{x:Null}"
+                                                Click="ConnectBtn_Click"
                                                 />
-                                        <Button Grid.Column="2" Content="DISCONNECT" Height="44"
+                                        <Button x:Name="DisconnectBtn" Grid.Column="2" Content="DISCONNECT" Height="44"
                                                 Background="#7A1A1A" Foreground="White"
                                                 FontWeight="Bold" BorderBrush="{x:Null}"
+                                                Click="DisconnectBtn_Click"
                                                 />
                                     </Grid>
 
