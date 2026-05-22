@@ -495,11 +495,6 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="EVENT HISTORY" Foreground="White"
                                         FontSize="24" FontWeight="Bold" VerticalAlignment="Center"/>
-                            <Button x:Name="ClearHistoryBtn" Grid.Column="1"
-                                    Content="CLEAR LOG" Height="34" Padding="16,0"
-                                    Background="#333333" Foreground="#AAAAAA"
-                                    FontWeight="Bold" FontSize="11" BorderBrush="{x:Null}"
-                                    />
                         </Grid>
 
                         <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,16">
@@ -517,13 +512,7 @@
                                FontSize="22" FontWeight="Bold" Margin="0,4,0,0"/>
                                 </StackPanel>
                             </Border>
-                            <Border Margin="8,0,0,0" Background="#1E1E1E" CornerRadius="6" Padding="14,10">
-                                <StackPanel>
-                                    <TextBlock Text="LAST EVENT" Foreground="#777" FontSize="10" FontWeight="SemiBold"/>
-                                    <TextBlock x:Name="HistLastTime" Text="—" Foreground="#AAAAAA"
-                                                FontSize="13" FontWeight="Bold" Margin="0,6,0,0"/>
-                                </StackPanel>
-                            </Border>
+
                         </UniformGrid>
 
                         <DataGrid x:Name="HistoryGrid" Grid.Row="2"
