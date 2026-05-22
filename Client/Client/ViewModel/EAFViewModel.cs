@@ -42,7 +42,6 @@ namespace Client.ViewModel
         private bool _furnaceEmpty;
         private bool _furnaceOvertemperature;
 
-        private bool _backendConnected;
         private bool _manuallyDisconnected = false;
 
         #endregion
@@ -159,16 +158,6 @@ namespace Client.ViewModel
             }
         }
 
-        public bool BackendConnected
-        {
-            get => _backendConnected;
-            set
-            {
-                _backendConnected = value;
-                OnPropertyChanged();
-            }
-        }
-
         public bool ManuallyDisconnected
         {
             get => _manuallyDisconnected;
@@ -240,10 +229,10 @@ namespace Client.ViewModel
         private ObservableCollection<EventDto> _events = new ObservableCollection<EventDto>();
         public EventDto lastEvent;
         public string LastEventText => lastEvent == null ? "—" :
-    $"{lastEvent.Name}";
+                                        $"{lastEvent.Name}";
 
         public string LastEventTime => lastEvent == null ? "—" :
-    $"{lastEvent.Type} — {lastEvent.Time:dd.MM.yyyy HH:mm:ss}";
+                                        $"{lastEvent.Type} — {lastEvent.Time:dd.MM.yyyy HH:mm:ss}";
 
         public ObservableCollection<EventDto> Events
         {
@@ -307,7 +296,6 @@ namespace Client.ViewModel
             if (_manuallyDisconnected)
             {
                 IsConnected = false;
-                BackendConnected = false;
                 return;
             }
 
@@ -319,7 +307,6 @@ namespace Client.ViewModel
                 {
                     IsConnected = false;
                     ConnectionStatus = "No data";
-                    BackendConnected = false;
                     return;
                 }
 
@@ -339,13 +326,11 @@ namespace Client.ViewModel
 
                 IsConnected = true;
                 ConnectionStatus = "Connected";
-                BackendConnected = true;
             }
             catch (Exception ex)
             {
                 IsConnected = false;
                 ConnectionStatus = $"Error: {ex.Message}";
-                BackendConnected = false;
             }
         }
         private async Task RefreshEventsAsync()

@@ -154,20 +154,18 @@ namespace Client.Views
         {
             var green = new SolidColorBrush(Color.FromRgb(76, 175, 80));
             var red = new SolidColorBrush(Color.FromRgb(244, 67, 54));
+            var gray = new SolidColorBrush(Color.FromRgb(68, 68, 68));
 
             LedPlc.Fill = _vm.IsConnected ? green : red;
-            LedBackend.Fill = _vm.BackendConnected ? green : red;
-            LedDatabase.Fill = _vm.IsConnected ? green : red;
+            LedBackend.Fill = green;  
+            LedDatabase.Fill = green;  
 
             ConnStatusLed.Fill = _vm.IsConnected ? green : red;
             ConnStatusText.Text = _vm.IsConnected ? "Connected" : "Not connected";
 
-            LedScrap.Fill = _vm.ScrapLoading
-                ? green : new SolidColorBrush(Color.FromRgb(68, 68, 68));
-
+            LedScrap.Fill = _vm.ScrapLoading ? green : gray;
             LedTapping.Fill = _vm.TappingActive
-                ? new SolidColorBrush(Color.FromRgb(255, 152, 0))
-                : new SolidColorBrush(Color.FromRgb(68, 68, 68));
+                ? new SolidColorBrush(Color.FromRgb(255, 152, 0)) : gray;
 
             LoadScrapBtn.IsEnabled = !_vm.FurnaceOverfill;
             LoadScrapBtn.Opacity = _vm.FurnaceOverfill ? 0.4 : 1.0;
@@ -266,7 +264,6 @@ namespace Client.Views
         {
             _vm.ManuallyDisconnected = true;
             _vm.IsConnected = false;
-            _vm.BackendConnected = false;
 
             ConnectBtn.IsEnabled = true;
             DisconnectBtn.IsEnabled = false;
