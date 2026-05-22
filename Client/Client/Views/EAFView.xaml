@@ -82,9 +82,9 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Image Width="42" Height="42" Margin="0,0,10,0"
+                    <Image Width="70" Height="70" Margin="0,0,10,0"
                            Source="C:\Users\Acer\Desktop\Praksa2026\Project\Client\images\danieliLogo.jpg"/>
-                    <Image Width="42" Height="42" Margin="0,0,15,0"
+                    <Image Width="70" Height="70" Margin="0,0,15,0"
                            Source="C:\Users\Acer\Desktop\Praksa2026\Project\Client\images\FERITLogo.png"/>
                     <TextBlock Text="EAF CONTROL" Foreground="White"
                                FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>

@@ -1,17 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-using S7.Net;
+﻿using S7.Net;
 using Server.Application.Interfaces;
 using Server.Domain;
-using System;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Server.Infrastructure.BackgroundServices
 {
