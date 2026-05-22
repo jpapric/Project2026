@@ -704,10 +704,17 @@
                                   Foreground="White"
                                   FontWeight="Bold"/>
 
-                    <TextBlock Text="18.05.2026 14:22:05"
-                               Foreground="#DDDDDD"
-                               VerticalAlignment="Center"
-                               FontSize="14"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock HorizontalAlignment="Right" 
+                                   x:Name="CurrentTimeText"
+                                   Text="14:22:05"
+                                   Foreground="#DDDDDD"
+                                   FontSize="12"/>
+                        <TextBlock x:Name="CurrentDateText"
+                                   Text="18.05.2026"
+                                   Foreground="#DDDDDD"
+                                   FontSize="12"/>
+                    </StackPanel>
 
                 </StackPanel>
 

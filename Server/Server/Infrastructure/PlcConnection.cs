@@ -193,7 +193,7 @@ namespace Server.Infrastructure.BackgroundServices
 
                     }
 
-                    _logger.LogInformation($"Write {variableName} to value {test}");
+                    _logger.LogInformation($"Write {variableName} to value {value}");
 
                 }
                 catch (Exception ex)

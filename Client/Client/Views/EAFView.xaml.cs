@@ -49,6 +49,8 @@ namespace Client.Views
             DrawMaterialFill();
             DrawLeds();
             DrawAlarmBanners();
+            CurrentTimeText.Text = DateTime.Now.ToString("HH:mm:ss");
+            CurrentDateText.Text = DateTime.Now.ToString("dd.MM.yyyy");
         }
 
         private void DrawMetricCards()
