@@ -263,11 +263,25 @@ namespace Server.Infrastructure.Controllers
         }
         [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> Electrodes()
+        public async Task<IActionResult> LiftElectrodes()
         {
             try
             {
-                await _service.MoveElectrodes();
+                await _service.LiftElectrodes();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> DropElectrodes()
+        {
+            try
+            {
+                await _service.DropElectrodes();
                 return Ok();
             }
             catch (Exception ex)

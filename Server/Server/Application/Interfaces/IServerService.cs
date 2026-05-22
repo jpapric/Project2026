@@ -16,7 +16,8 @@ namespace Server.Application.Interfaces
         Task LoadScrap();
         Task Tap();
         Task Reset();
-        Task MoveElectrodes();
+        Task LiftElectrodes();
+        Task DropElectrodes();
         List<EventDto> GetEvents();
 
 
