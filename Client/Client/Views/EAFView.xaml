@@ -385,6 +385,27 @@
                                         Background="#CC5500"
                                         Click="TapBtn_Click"/>
 
+                                <Grid Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="8"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Button x:Name="ElectrodeDownBtn" Grid.Column="0"
+                                            Content="ELECTRODES DOWN"
+                                            Height="36" Background="#333333" Foreground="#AADD44"
+                                            FontWeight="Bold" FontSize="11" BorderBrush="{x:Null}"
+                                            Click="ElectrodeDownBtn_Click"/>
+                                    
+                                    <Button x:Name="ElectrodeUpBtn" Grid.Column="2"
+                                            Content="ELECTRODES UP"
+                                            Height="36" Background="#333333" Foreground="#AAAAAA"
+                                            FontWeight="Bold" FontSize="11" BorderBrush="{x:Null}"
+                                            Click="ElectrodeUpBtn_Click"/>
+                                
+                                </Grid>
+
                                 <Button Content="RESET" Click="ResetBtn_Click"                                       
                                         Style="{StaticResource ActionBtn}"
                                         Background="#7A1A1A"

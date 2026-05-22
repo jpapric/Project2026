@@ -274,6 +274,12 @@ namespace Client.Views
             CpuText.Text = "CPU: —";
         }
 
+        private void ElectrodeDownBtn_Click(object sender, RoutedEventArgs e)
+            => _vm.ElectrodesDownCommand.Execute(null);
+
+        private void ElectrodeUpBtn_Click(object sender, RoutedEventArgs e)
+            => _vm.ElectrodesUpCommand.Execute(null);
+
         private async Task LoadPlcConfig()
         {
             try
@@ -326,5 +332,6 @@ namespace Client.Views
 
         private void AlarmsBtn_Click(object sender, RoutedEventArgs e)
         { ShowPage(AlarmsPage); AlarmsBtn.Background = (Brush)new BrushConverter().ConvertFrom("DimGray"); }
+
     }
 }

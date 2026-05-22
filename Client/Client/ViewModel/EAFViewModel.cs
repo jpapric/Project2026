@@ -261,6 +261,8 @@ namespace Client.ViewModel
         public ICommand SetCurrentCommand { get; }
         public ICommand SetAngleCommand { get; }
         public ICommand UpdatePlcCommand { get; }
+        public ICommand ElectrodesDownCommand { get; }
+        public ICommand ElectrodesUpCommand { get; }
 
         #endregion
 
@@ -281,6 +283,8 @@ namespace Client.ViewModel
             SetCurrentCommand = new AsyncCommand(SetCurrent);
             SetAngleCommand = new AsyncCommand(SetAngle);
             UpdatePlcCommand = new AsyncCommand<PLCDto>(UpdatePlc);
+            ElectrodesDownCommand = new AsyncCommand(ElectrodesDown);
+            ElectrodesUpCommand = new AsyncCommand(ElectrodesUp);
         }
 
         #endregion
@@ -427,6 +431,18 @@ namespace Client.ViewModel
         private async Task UpdatePlc(PLCDto plcDto)
         {
             try { await _proxy.UpdatePlcAsync(plcDto); }
+            catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
+        }
+
+        private async Task ElectrodesDown()
+        {
+            try { await _proxy.ElectrodeDownAsync(); }
+            catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
+        }
+
+        private async Task ElectrodesUp()
+        {
+            try { await _proxy.ElectrodeUpAsync(); }
             catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
         }
         #endregion

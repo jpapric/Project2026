@@ -117,5 +117,17 @@ namespace Client.Proxies
             var response = await _httpClient.PostAsync("Event_detection", null);
             response.EnsureSuccessStatusCode();
         }
+
+        public async Task ElectrodeDownAsync()
+        {
+            var response = await _httpClient.PostAsync("DropElectrodes", null);
+            response.EnsureSuccessStatusCode();
+        }
+
+        public async Task ElectrodeUpAsync()
+        {
+            var response = await _httpClient.PostAsync("LiftElectrodes", null);
+            response.EnsureSuccessStatusCode();
+        }
     }
 }
