@@ -145,8 +145,9 @@ namespace Server.Infrastructure.BackgroundServices
                          test = (bool)_plc.Read("DB302.DBX0.0");
                     }
                     else if(variableNameLower == "tap"){
-                        _plc.Write("DB302.DBX0.1", state);
-                         test = (bool)_plc.Read("DB302.DBX0.1");
+                        bool result2 = (bool)_plc.Read("DB302.DBX0.1");
+                        _plc.Write("DB302.DBX0.1", !result2);
+                         
                     }
                     else if(variableNameLower == "reset"){
                         _plc.Write("DB302.DBD10", state);

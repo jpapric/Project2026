@@ -238,6 +238,12 @@ namespace Client.ViewModel
         #region History
 
         private ObservableCollection<EventDto> _events = new ObservableCollection<EventDto>();
+        public EventDto lastEvent;
+        public string LastEventText => lastEvent == null ? "—" :
+    $"{lastEvent.Name}";
+
+        public string LastEventTime => lastEvent == null ? "—" :
+    $"{lastEvent.Type} — {lastEvent.Time:dd.MM.yyyy HH:mm:ss}";
 
         public ObservableCollection<EventDto> Events
         {
@@ -346,6 +352,10 @@ namespace Client.ViewModel
                 if (events == null) return;
 
                 Events = new ObservableCollection<EventDto>(events);
+               
+                lastEvent = Events.Last();
+                OnPropertyChanged(nameof(LastEventText));
+                OnPropertyChanged(nameof(LastEventTime));
             }
             catch { }
         }

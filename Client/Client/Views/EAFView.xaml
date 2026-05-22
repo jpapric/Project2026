@@ -555,12 +555,12 @@
                                 </Style>
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="TIME" Width="170"
-                                    Binding="{Binding Timestamp, StringFormat=dd.MM.yyyy HH:mm:ss}"/>
+                                <DataGridTextColumn Header="NAME" Width="170"
+                                    Binding="{Binding Name, StringFormat=dd.MM.yyyy HH:mm:ss}"/>
                                 <DataGridTextColumn Header="TYPE" Width="100"
-                                    Binding="{Binding EventType}"/>
-                                <DataGridTextColumn Header="EVENT" Width="*"
-                                    Binding="{Binding EventDescription}"/>
+                                    Binding="{Binding Type}"/>
+                                <DataGridTextColumn Header="TIME" Width="*"
+                                    Binding="{Binding Time}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -674,18 +674,14 @@
 
                 <StackPanel VerticalAlignment="Center">
 
-                    <TextBlock Text="[14:21:55] Overtemperature cleared"
+                    <TextBlock Text="{Binding LastEventTime}"
                                Foreground="#FF9800"
-                               FontSize="12"/>
-
-                    <TextBlock Text="[14:20:13] Shear cycle started"
-                               Foreground="#00BFFF"
                                FontSize="12"/>
 
                 </StackPanel>
 
                 <TextBlock Grid.Column="1"
-                           Text="EVENT: Process running normally"
+                           Text="{Binding LastEventText}"
                            Foreground="#DDDDDD"
                            FontSize="15"
                            VerticalAlignment="Center"

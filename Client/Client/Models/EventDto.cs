@@ -8,9 +8,8 @@ namespace Client.Models
 {
     public class EventDto
     {
-        public int Id { get; set; }
-        public DateTime Timestamp { get; set; }
-        public string EventType { get; set; }
-        public string EventDescription { get; set; }
+        public string Name { get; set; }
+        public string Type { get; set; }
+        public DateTime Time {  get; set; }
     }
 }
