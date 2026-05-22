@@ -45,7 +45,6 @@ namespace Client.ViewModel
         private bool _backendConnected;
         private bool _manuallyDisconnected = false;
 
-
         #endregion
 
         #region PLC Data Properties
@@ -163,10 +162,10 @@ namespace Client.ViewModel
         public bool BackendConnected
         {
             get => _backendConnected;
-            set 
-            { 
-                _backendConnected = value; 
-                OnPropertyChanged(); 
+            set
+            {
+                _backendConnected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -174,9 +173,9 @@ namespace Client.ViewModel
         {
             get => _manuallyDisconnected;
             set
-            { 
-                _manuallyDisconnected = value; 
-                OnPropertyChanged(); 
+            {
+                _manuallyDisconnected = value;
+                OnPropertyChanged();
             }
         }
 
@@ -255,6 +254,7 @@ namespace Client.ViewModel
         public ICommand ResetCommand { get; }
         public ICommand SetCurrentCommand { get; }
         public ICommand SetAngleCommand { get; }
+        public ICommand UpdatePlcCommand { get; }
 
         #endregion
 
@@ -274,6 +274,7 @@ namespace Client.ViewModel
             ResetCommand = new AsyncCommand(Reset);
             SetCurrentCommand = new AsyncCommand(SetCurrent);
             SetAngleCommand = new AsyncCommand(SetAngle);
+            UpdatePlcCommand = new AsyncCommand<PLCDto>(UpdatePlc);
         }
 
         #endregion
@@ -308,13 +309,14 @@ namespace Client.ViewModel
                 {
                     IsConnected = false;
                     ConnectionStatus = "No data";
+                    BackendConnected = false;
                     return;
                 }
 
                 ScrapLoading = data.Scrap_loading;
                 TappingActive = data.Tapping_active;
                 ActualTilting = data.Actual_tilting;
-                MaterialWeight = data.Material_weight/1000f;
+                MaterialWeight = data.Material_weight / 1000f;
                 ActualCurrent = data.Actual_current;
                 EnergyConsumed = data.Energy_consumed;
                 ActualTemperature = data.Actual_temperature;
@@ -327,11 +329,13 @@ namespace Client.ViewModel
 
                 IsConnected = true;
                 ConnectionStatus = "Connected";
+                BackendConnected = true;
             }
             catch (Exception ex)
             {
                 IsConnected = false;
                 ConnectionStatus = $"Error: {ex.Message}";
+                BackendConnected = false;
             }
         }
         private async Task RefreshEventsAsync()
@@ -410,6 +414,13 @@ namespace Client.ViewModel
             }
         }
 
+        private async Task UpdatePlc(PLCDto plcDto)
+        {
+            try { await _proxy.UpdatePlcAsync(plcDto); }
+            catch (Exception ex) { ConnectionStatus = $"Error: {ex.Message}"; }
+        }
         #endregion
+
+
     }
 }

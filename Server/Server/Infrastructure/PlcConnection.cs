@@ -115,7 +115,7 @@ namespace Server.Infrastructure.BackgroundServices
                         repository.Event_detection(furnaceData);
                         repository.PostEAF(furnaceData);
 
-                    watch.Stop();
+                        watch.Stop();
                         //_logger.LogInformation($"Sending speed {watch.ElapsedMilliseconds}");
 
                 }
