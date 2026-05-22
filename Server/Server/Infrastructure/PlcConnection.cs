@@ -149,6 +149,12 @@ namespace Server.Infrastructure.BackgroundServices
                         _plc.Write("DB302.DBX0.1", !result2);
                          
                     }
+                    /*else if (variableNameLower == "electrodes")
+                    {
+                        bool result2 = (bool)_plc.Read("DB302.DBX0.1");
+                        _plc.Write("DB302.DBX0.1", !result2);
+
+                    }*/
                     else if(variableNameLower == "reset"){
                         _plc.Write("DB302.DBD10", state);
                          test = (bool)_plc.Read("DB302.DBD10");

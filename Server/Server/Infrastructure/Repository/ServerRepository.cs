@@ -174,6 +174,28 @@ namespace Server.Infrastructure.Repository
 
             connection.Close();
         }
+        public async Task MoveElectrodes()
+        {
+            string query = "UPDATE L2_TO_PLC SET Electrodes = @Electrodes";
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+            using SqlCommand command = new SqlCommand(query, connection);
+
+            command.Parameters.AddWithValue("@Electrodes", true);
+            connection.Open();
+            command.ExecuteNonQuery();
+
+
+            _plcConnection.WriteBool("electrodes", true);
+            await Task.Delay(500);
+
+
+
+            command.Parameters["@Electrodes"].Value = false;
+            command.ExecuteNonQuery();
+
+            connection.Close();
+        }
         public async Task Reset()
         {
             string query = "UPDATE L2_TO_PLC                          " +

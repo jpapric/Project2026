@@ -14,6 +14,7 @@ namespace Server.Application.Interfaces
         void PostEAF(EAF eaf);
         Task Tap();
         Task Reset();
+        Task MoveElectrodes();
         List<Event> GetEvents();
         void PostEvent(string name, string type, DateTime time);
         void Event_detection(EAF furnaceData);

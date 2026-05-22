@@ -261,5 +261,19 @@ namespace Server.Infrastructure.Controllers
                 return Problem(ex.Message);
             }
         }
+        [HttpPost]
+        [Route("[action]")]
+        public async Task<IActionResult> Electrodes()
+        {
+            try
+            {
+                await _service.MoveElectrodes();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }

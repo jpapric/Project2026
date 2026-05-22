@@ -89,6 +89,10 @@ namespace Server.Application.Services
         {
             await _repository.Reset();
         }
+        public async Task MoveElectrodes()
+        {
+            await _repository.MoveElectrodes();
+        }
         public List<EventDto> GetEvents()
         {
             
