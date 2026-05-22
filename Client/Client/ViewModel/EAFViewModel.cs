@@ -353,7 +353,7 @@ namespace Client.ViewModel
 
                 Events = new ObservableCollection<EventDto>(events);
                
-                lastEvent = Events.Last();
+                lastEvent = Events.First();
                 OnPropertyChanged(nameof(LastEventText));
                 OnPropertyChanged(nameof(LastEventTime));
             }

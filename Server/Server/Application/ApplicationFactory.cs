@@ -57,6 +57,7 @@ namespace Server.Application
                 Tapping_error = eaf.Tapping_error,
                 Furnace_empty = eaf.Furnace_empty,
                 Furnace_overtemperature = eaf.Furnace_overtemperature,
+                Electrodes_lowered = eaf.Electrodes_lowered
             };
         }
 

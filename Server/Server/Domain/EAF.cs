@@ -7,6 +7,8 @@
         public EAF(
             bool scrap_loading,
             bool tapping_active,
+            bool electrodes_lowered,
+            bool electrodes_moving,
             float actual_tilting,
             float material_weight,
             float actual_current,
@@ -15,10 +17,13 @@
             bool furnace_overfill,
             bool tapping_error,
             bool furnace_empty,
-            bool furnace_overtemperature)
+            bool furnace_overtemperature
+            )
         {
             Scrap_loading = scrap_loading;
             Tapping_active = tapping_active;
+            Electrodes_lowered = electrodes_lowered;
+            Electrodes_moving = electrodes_moving;
             Actual_tilting = actual_tilting;
             Material_weight = material_weight;
             Actual_current = actual_current;
@@ -28,11 +33,14 @@
             Tapping_error = tapping_error;
             Furnace_empty = furnace_empty;
             Furnace_overtemperature = furnace_overtemperature;
+            
         }
 
         // Core Metrics
         public bool Scrap_loading { get; set; }
         public bool Tapping_active { get; set; }
+        public bool Electrodes_lowered { get; set; }
+        public bool Electrodes_moving { get; set; }
         public float Actual_tilting { get; set; }
         public float Material_weight { get; set; }
         public float Actual_current { get; set; }
@@ -44,5 +52,7 @@
         public bool Tapping_error { get; set; }
         public bool Furnace_empty { get; set; }
         public bool Furnace_overtemperature { get; set; }
+        
+        
     }
 }
