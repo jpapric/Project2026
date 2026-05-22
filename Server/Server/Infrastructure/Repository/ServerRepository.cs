@@ -226,7 +226,7 @@ namespace Server.Infrastructure.Repository
                 EAF result = new EAF();
                 string query = @"SELECT Scrap_loading, Tapping_active, Actual_tilting, Material_weight, Actual_current, 
                         Energy_consumed, Actual_temperature, Furnace_overfill, Tapping_error, 
-                        Furnace_empty, Furnace_overtemperature 
+                        Furnace_empty, Furnace_overtemperature,electrodes_lowered 
                         FROM PLC_TO_L2";
 
                 using SqlConnection connection = new SqlConnection(_connectionString);
@@ -247,8 +247,10 @@ namespace Server.Infrastructure.Repository
                     bool tapping_error = reader.GetBoolean(reader.GetOrdinal("Tapping_error"));
                     bool furnace_empty = reader.GetBoolean(reader.GetOrdinal("Furnace_empty"));
                     bool furnace_overtemperature = reader.GetBoolean(reader.GetOrdinal("Furnace_overtemperature"));
+                    bool electrodes_lowered = reader.GetBoolean(reader.GetOrdinal("Electrodes_lowered"));
+                    bool electrodes_moving = reader.GetBoolean(reader.GetOrdinal("Electrodes_moving"));
 
-                    result = new EAF(scrap_loading, tapping_active, actual_tilting, material_weight, actual_current,
+                    result = new EAF(scrap_loading, tapping_active, electrodes_lowered,electrodes_moving, actual_tilting, material_weight, actual_current,
                                      energy_consumed, actual_temperature, furnace_overfill, tapping_error,
                                      furnace_empty, furnace_overtemperature);
                 }
@@ -267,11 +269,11 @@ namespace Server.Infrastructure.Repository
                 string query = @"INSERT INTO PLC_TO_L2 
                         (Scrap_loading, Tapping_active, Actual_tilting, Material_weight, Actual_current,
                         Energy_consumed, Actual_temperature, Furnace_overfill, Tapping_error,
-                        Furnace_empty, Furnace_overtemperature)
+                        Furnace_empty, Furnace_overtemperature,Electrodes_lowered,Electrodes_moving)
                         VALUES
                         (@Scrap_loading, @Tapping_active, @Actual_tilting, @Material_weight, @Actual_current,
                         @Energy_consumed, @Actual_temperature, @Furnace_overfill, @Tapping_error,
-                        @Furnace_empty, @Furnace_overtemperature)";
+                        @Furnace_empty, @Furnace_overtemperature,@Electrodes_lowered,@Electrodes_moving)";
 
                 using SqlConnection connection = new SqlConnection(_connectionString);
                 using SqlCommand command = new SqlCommand(query, connection);
@@ -287,7 +289,8 @@ namespace Server.Infrastructure.Repository
                 command.Parameters.AddWithValue("@Tapping_error", eaf.Tapping_error);
                 command.Parameters.AddWithValue("@Furnace_empty", eaf.Furnace_empty);
                 command.Parameters.AddWithValue("@Furnace_overtemperature", eaf.Furnace_overtemperature);
-
+                command.Parameters.AddWithValue("@Electrodes_lowered", eaf.Electrodes_lowered);
+                command.Parameters.AddWithValue("@Electrodes_moving", eaf.Electrodes_moving);
                 connection.Open();
                 command.ExecuteNonQuery();
             }
@@ -428,6 +431,8 @@ namespace Server.Infrastructure.Repository
             return new EAF(
                 reader.GetBoolean(reader.GetOrdinal("Scrap_loading")),
                 reader.GetBoolean(reader.GetOrdinal("Tapping_active")),
+                reader.GetBoolean(reader.GetOrdinal("Electrodes_lowered")),
+                reader.GetBoolean(reader.GetOrdinal("Electrodes_moving")),
                 Convert.ToSingle(reader["Actual_tilting"]),
                 Convert.ToSingle(reader["Material_weight"]),
                 Convert.ToSingle(reader["Actual_current"]),
@@ -437,14 +442,10 @@ namespace Server.Infrastructure.Repository
                 reader.GetBoolean(reader.GetOrdinal("Tapping_error")),
                 reader.GetBoolean(reader.GetOrdinal("Furnace_empty")),
                 reader.GetBoolean(reader.GetOrdinal("Furnace_overtemperature"))
-          
+               
             );
         }
 
-        //public LastEvent(){};
-        //public UpdateShears(){};
-        //public UpdateMaterial(){};
-        //
 
 
     }

@@ -50,7 +50,7 @@ namespace Server.Infrastructure.BackgroundServices
                     if (_plc.IsConnected)
                     {
                         _logger.LogInformation("PLC connected successfully.");
-                        return; 
+                        return;
                     }
                 }
                 catch (OperationCanceledException)
@@ -77,8 +77,9 @@ namespace Server.Infrastructure.BackgroundServices
                 }
                 else
                 {
-                     ReadFromPlc();
-                    
+                    ReadFromPlc();
+
+
 
                 }
 
@@ -90,28 +91,27 @@ namespace Server.Infrastructure.BackgroundServices
         {
             try
             {
-               
-                    try
-                    {
-                        var    watch = System.Diagnostics.Stopwatch.StartNew();
-                   
 
-                        EAF furnaceData = new EAF();
-                        _plc.ReadClass(furnaceData, 301, 0);
-                        _cache.Update(furnaceData);
-                        using var scope = _scopeFactory.CreateScope();
-                        var repository = scope.ServiceProvider.GetRequiredService<IServerRepository>();
-                        repository.Event_detection(furnaceData);
-                        repository.PostEAF(furnaceData);
+                try
+                {
+                    //var    watch = System.Diagnostics.Stopwatch.StartNew();
+                    EAF furnaceData = new EAF();
+                    _plc.ReadClass(furnaceData, 301, 0);
+                    _cache.Update(furnaceData);
+                    using var scope = _scopeFactory.CreateScope();
+                    var repository = scope.ServiceProvider.GetRequiredService<IServerRepository>();
+                    repository.Event_detection(furnaceData);
+                    repository.PostEAF(furnaceData);
 
-                        watch.Stop();
-                        //_logger.LogInformation($"Sending speed {watch.ElapsedMilliseconds}");
+
+                    //watch.Stop();
+                    //_logger.LogInformation($"Sending speed {watch.ElapsedMilliseconds}");
 
                 }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning("DB{Db} not readable: {Message}", 301, ex.Message);
-                    }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("DB{Db} not readable: {Message}", 301, ex.Message);
+                }
             }
             catch (Exception ex)
             {
@@ -120,38 +120,45 @@ namespace Server.Infrastructure.BackgroundServices
             }
         }
 
-        public void WriteBool(string variableName,bool state)
+        public void WriteBool(string variableName, bool state)
         {
             try
-            {   
+            {
 
                 try
                 {
-                    bool test=false;
+                    bool test = false;
                     string variableNameLower = variableName.ToLower();
-                    if (variableNameLower =="load_scrap") {
+                    if (variableNameLower == "load_scrap")
+                    {
                         _plc.Write("DB302.DBX0.0", state);
-                         test = (bool)_plc.Read("DB302.DBX0.0");
+                        test = (bool)_plc.Read("DB302.DBX0.0");
                     }
-                    else if(variableNameLower == "tap"){
-                        bool result2 = (bool)_plc.Read("DB302.DBX0.1");
-                        _plc.Write("DB302.DBX0.1", !result2);
-                         
-                    }
-                    /*else if (variableNameLower == "electrodes")
+                    else if (variableNameLower == "tap")
                     {
                         bool result2 = (bool)_plc.Read("DB302.DBX0.1");
                         _plc.Write("DB302.DBX0.1", !result2);
 
-                    }*/
-                    else if(variableNameLower == "reset"){
+                    }
+                    else if (variableNameLower == "reset")
+                    {
                         _plc.Write("DB302.DBD10", state);
-                         test = (bool)_plc.Read("DB302.DBD10");
+                        test = (bool)_plc.Read("DB302.DBD10");
+                    }
+                    else if (variableNameLower == "electrodes")
+                    {
+                        bool result2 = (bool)_plc.Read("DB302.DBX0.2");
+                        _plc.Write("DB302.DBX0.2", state);
+                        bool result27 = (bool)_plc.Read("DB302.DBX0.2");
+                        bool result3 = (bool)_plc.Read("DB301.DBX0.2");
+
                     }
 
-                    _logger.LogInformation($"Write {variableName} to value {test}");
-
                 }
+
+                //_logger.LogInformation($"Write {variableName} to value {test}");
+
+
                 catch (Exception ex)
                 {
                     _logger.LogWarning("DB{Db} not readable: {Message}", 301, ex.Message);
@@ -181,15 +188,15 @@ namespace Server.Infrastructure.BackgroundServices
                     }
                     else if (variableNameLower == "tap_angle")
                     {
-                        _plc.Write("DB302.DBD6", (float)value); 
+                        _plc.Write("DB302.DBD6", (float)value);
 
                         object table1 = _plc.Read("DB302.DBD6.0");
                         var table2 = Convert.ToSingle(_plc.Read("DB301.DBD2"));
-                        
+
 
                     }
 
-                    _logger.LogInformation($"Write {variableName} to value {value}");
+                    //_logger.LogInformation($"Write {variableName} to value {value}");
 
                 }
                 catch (Exception ex)
@@ -202,7 +209,7 @@ namespace Server.Infrastructure.BackgroundServices
                 _logger.LogError("Read failed: {Message}", ex.Message);
                 _plc!.Close();
             }
-        
+
         }
         private async Task<Domain.Plc> FetchPlcConfigurationAsync(CancellationToken cancellationToken)
         {
