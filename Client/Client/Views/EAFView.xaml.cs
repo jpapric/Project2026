@@ -18,10 +18,9 @@ namespace Client.Views
         private double _sparkPhase = 0;
         private double _electrodeCurrentY = 10;
 
-        private const double ElRestY = 10.0;
-        private const double ElActiveY = 108.0;
+        private const double ElRestY = -5;
+        private const double ElActiveY = 90.0;
         private const double ElHeight = 110.0;
-        private const double ElTipH = 16.0;
         private const double MaxFillH = 173.0;
         private const double MaxEnergy = 500.0;
 
@@ -70,19 +69,15 @@ namespace Client.Views
             if (Math.Abs(_electrodeCurrentY - targetY) < 0.1)
                 _electrodeCurrentY = targetY;
 
-            double tipY = _electrodeCurrentY + ElHeight;
-            double sparkY = tipY + ElTipH + 2;
+            double sparkY = _electrodeCurrentY + ElHeight + 2;
 
             Canvas.SetTop(Electrode1, _electrodeCurrentY);
-            ElTip1.Points = new PointCollection { new Point(148, tipY), new Point(166, tipY), new Point(157, tipY + ElTipH) };
             Canvas.SetTop(Spark1, sparkY);
 
             Canvas.SetTop(Electrode2, _electrodeCurrentY);
-            ElTip2.Points = new PointCollection { new Point(271, tipY), new Point(289, tipY), new Point(280, tipY + ElTipH) };
             Canvas.SetTop(Spark2, sparkY);
 
             Canvas.SetTop(Electrode3, _electrodeCurrentY);
-            ElTip3.Points = new PointCollection { new Point(394, tipY), new Point(412, tipY), new Point(403, tipY + ElTipH) };
             Canvas.SetTop(Spark3, sparkY);
 
             if (melting)
@@ -109,9 +104,41 @@ namespace Client.Views
             double fraction = Math.Max(0, Math.Min(1, _vm.MaterialWeight / 50.0));
             double fillHeight = fraction * MaxFillH;
 
-            MaterialFill.Height = fillHeight;
             MaterialFill.Opacity = fraction > 0.01 ? 0.92 : 0;
-            Canvas.SetTop(MaterialFill, 194.0 - fillHeight);
+
+            if (fraction > 0.01)
+            {
+                double left = 23;
+                double right = 398;
+                double bottom = 194.0;
+                double angleRad = _vm.ActualTilting * Math.PI / 180.0;
+
+                double halfWidth = (right - left) / 2.0;
+                double dY = halfWidth * Math.Tan(angleRad);
+
+                double centerY = bottom - fillHeight;
+
+                double topLeft = centerY + dY;
+                double topRight = centerY - dY;
+
+                topLeft = Math.Max(topLeft, 22);
+                topRight = Math.Max(topRight, 22);
+
+                topLeft = Math.Min(topLeft, bottom);
+                topRight = Math.Min(topRight, bottom);
+
+                MaterialFill.Points = new PointCollection
+                {
+                    new System.Windows.Point(left,  topLeft),
+                    new System.Windows.Point(right, topRight),
+                    new System.Windows.Point(right, bottom),
+                    new System.Windows.Point(left,  bottom)
+                };
+            }
+            else
+            {
+                MaterialFill.Points = new PointCollection();
+            }
 
             Canvas.SetTop(WeightOverlay, Math.Max(194.0 - fillHeight + 6, 166.0));
             WeightOverlay.Text = $"{_vm.MaterialWeight:F1} T  |  {fraction * 100:F0}%";
@@ -121,6 +148,7 @@ namespace Client.Views
             EnergyLabel.Text = $"{_vm.EnergyConsumed:F0} kWh";
             EnergyPctLabel.Text = $"{pct:F0}%";
         }
+
 
         private void DrawLeds()
         {

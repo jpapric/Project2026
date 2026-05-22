@@ -192,31 +192,21 @@
 
                                         <!-- Electrode 1 -->
                                         <Rectangle x:Name="Electrode1"
-                                                   Canvas.Left="148" Canvas.Top="10"
+                                                   Canvas.Left="235" Canvas.Top="10"
                                                    Width="18" Height="100"
                                                    RadiusX="3" RadiusY="3" Fill="#666666"/>
-                                        <!-- Tip triangle -->
-                                        <Polygon x:Name="ElTip1"
-                                                 Points="148,120 166,120 157,136"
-                                                 Fill="#888888"/>
 
                                         <!-- Electrode 2 -->
                                         <Rectangle x:Name="Electrode2"
                                                    Canvas.Left="271" Canvas.Top="10"
                                                    Width="18" Height="97"
                                                    RadiusX="3" RadiusY="3" Fill="#666666"/>
-                                        <Polygon x:Name="ElTip2"
-                                                 Points="271,120 289,120 280,136"
-                                                 Fill="#888888"/>
 
                                         <!-- Electrode 3 -->
                                         <Rectangle x:Name="Electrode3"
-                                                   Canvas.Left="394" Canvas.Top="10"
+                                                   Canvas.Left="307" Canvas.Top="10"
                                                    Width="18" Height="100"
                                                    RadiusX="3" RadiusY="3" Fill="#666666"/>
-                                        <Polygon x:Name="ElTip3"
-                                             Points="394,120 412,120 403,136"
-                                             Fill="#888888"/>
 
                                         <!-- Sparks at electrode tips -->
                                         <Ellipse x:Name="Spark1" Canvas.Left="152" Canvas.Top="137" Width="10" Height="10" Fill="#AADD44" Opacity="0"/>
@@ -254,11 +244,9 @@
                                             </Path.Data>
                                         </Path>
 
-                                        <!-- Material fill — grows upward from flat bottom -->
-                                        <Rectangle x:Name="MaterialFill"
-                                                   Canvas.Left="23" Canvas.Top="194"
-                                                   Width="375" Height="0"
-                                                   Fill="#CC4400" Opacity="0.88"/>
+                                        <!-- Material fill -->
+                                        <Polygon x:Name="MaterialFill"
+                                                    Fill="#CC4400" Opacity="0"/>
 
                                         <!-- Weight text overlay -->
                                         <TextBlock x:Name="WeightOverlay"
