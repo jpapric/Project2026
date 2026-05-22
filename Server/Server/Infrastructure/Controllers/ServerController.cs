@@ -246,6 +246,20 @@ namespace Server.Infrastructure.Controllers
             }
         }
 
-       
+        [HttpGet]
+        [Route("[action]")]
+        public IActionResult GetEvent()
+        {
+            try
+            {
+                List<EventDto> events = _service.GetEvents();
+                EventDto e = events.Last();
+                return Ok(e);
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
     }
 }
