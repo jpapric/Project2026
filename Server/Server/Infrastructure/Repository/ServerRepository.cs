@@ -176,24 +176,26 @@ namespace Server.Infrastructure.Repository
         }
         public async Task LiftElectrodes()
         {
-            string query = "UPDATE L2_TO_PLC SET Electrodes = @Electrodes";
+            string query = "UPDATE L2_TO_PLC SET ELECTRODES = @Electrodes";
 
             using SqlConnection connection = new SqlConnection(_connectionString);
             using SqlCommand command = new SqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@Electrodes", false);
+            _plcConnection.WriteBool("electrodes", false);
             connection.Open();
             command.ExecuteNonQuery();
             connection.Close();
         }
         public async Task DropElectrodes()
         {
-            string query = "UPDATE L2_TO_PLC SET Electrodes = @Electrodes";
+            string query = "UPDATE L2_TO_PLC SET ELECTRODES = @Electrodes";
 
             using SqlConnection connection = new SqlConnection(_connectionString);
             using SqlCommand command = new SqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@Electrodes", true);
+            _plcConnection.WriteBool("electrodes", true);
             connection.Open();
             command.ExecuteNonQuery();
             connection.Close();
