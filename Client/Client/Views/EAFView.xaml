@@ -113,7 +113,7 @@
                         Padding="10" VerticalAlignment="Center">
                     <StackPanel>
                         <TextBlock x:Name="PlcAddressText"
-                                   Text="192.168.0.1 | Rack 0 | Slot 1"
+                                   Text="192.168.100.215 | Rack 0 | Slot 1"
                                    Foreground="#DDDDDD" FontSize="12"/>
                         <TextBlock x:Name="CpuText" Text="CPU: S7-1500" Foreground="#00BFFF"
                                    FontSize="12" Margin="0,3,0,0"/>
