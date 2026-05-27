@@ -342,12 +342,6 @@ namespace Client.ViewModel
 
                 await RefreshEventsAsync();
 
-                if (wasTapping && !_tappingActive)
-                {
-                    await Task.Delay(1000);
-                    await _proxy.ResetAsync();  
-                }
-
                 IsConnected = true;
                 ConnectionStatus = "Connected";
             }

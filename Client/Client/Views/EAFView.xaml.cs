@@ -17,7 +17,6 @@ namespace Client.Views
 
         private double _sparkPhase = 0;
         private double _electrodeCurrentY = 10;
-        private bool _sliderReset = false;
 
         private const double ElRestY = -5;
         private const double ElActiveY = 90.0;
@@ -50,19 +49,6 @@ namespace Client.Views
             DrawLeds();
             DrawAlarmBanners();
             TapAngleLabel.Text = $"{TapSlider.Value:F1}°";
-
-
-            if (!_vm.TappingActive && TapSlider.Value != 0 && !_sliderReset)
-            {
-                TapSlider.ValueChanged -= TapSlider_ValueChanged;
-                TapSlider.Value = 0;
-                _vm.TapAngleSetpoint = 0f;
-                TapSlider.ValueChanged += TapSlider_ValueChanged;
-                _sliderReset = true;
-            }
-            if (_vm.TappingActive)
-                _sliderReset = false;
-
 
             CurrentTimeText.Text = DateTime.Now.ToString("HH:mm:ss");
             CurrentDateText.Text = DateTime.Now.ToString("dd.MM.yyyy");
