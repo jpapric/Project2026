@@ -426,6 +426,15 @@ namespace Server.Infrastructure.Repository
                     PostEvent("Furnace overheated", "Warning", DateTime.Now);
                 else if (previous.Furnace_overtemperature && !current.Furnace_overtemperature)
                     PostEvent("Furnace overtemperature resolved", "Feedback", DateTime.Now);
+
+                if (!previous.Electrodes_moving && current.Electrodes_moving)
+                    PostEvent("Electrodes lowering", "Feedback", DateTime.Now);
+
+                if (!previous.Electrodes_lowered && current.Electrodes_lowered)
+                    PostEvent("Electrodes are down", "Feedback", DateTime.Now);
+                else if (previous.Electrodes_lowered && !current.Electrodes_lowered)
+                    PostEvent("Electrodes are up", "Feedback", DateTime.Now);
+
             }
             catch (Exception ex)
             {
