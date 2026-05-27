@@ -83,7 +83,7 @@
 
                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                     <Image Width="70" Height="70" Margin="0,0,10,0"
-                           Source="C:\Users\Acer\Desktop\Praksa2026\Project\Client\images\danieliLogo.jpg"/>
+                           Source="C:\Users\Acer\Desktop\Praksa2026\Project\Client\images\danieliLogo.png"/>
                     <Image Width="70" Height="70" Margin="0,0,15,0"
                            Source="C:\Users\Acer\Desktop\Praksa2026\Project\Client\images\FERITLogo.png"/>
                     <TextBlock Text="EAF CONTROL" Foreground="White"
