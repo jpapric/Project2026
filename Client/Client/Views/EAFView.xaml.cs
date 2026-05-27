@@ -187,8 +187,12 @@ namespace Client.Views
             LedTapping.Fill = _vm.TappingActive
                 ? new SolidColorBrush(Color.FromRgb(255, 152, 0)) : gray;
 
-            LoadScrapBtn.IsEnabled = !_vm.FurnaceOverfill;
-            LoadScrapBtn.Opacity = _vm.FurnaceOverfill ? 0.4 : 1.0;
+            LoadScrapBtn.IsEnabled = !_vm.FurnaceOverfill && !_vm.TappingActive;
+            LoadScrapBtn.Opacity = (_vm.FurnaceOverfill || _vm.TappingActive) ? 0.4 : 1.0;
+
+            SetCurrentBtn.IsEnabled = _vm.ElectrodesLowered;
+            SetCurrentBtn.Opacity = _vm.ElectrodesLowered ? 1.0 : 0.4;
+
         }
 
         private void DrawAlarmBanners()
