@@ -325,6 +325,8 @@ namespace Client.ViewModel
                     return;
                 }
 
+                bool wasTapping = _tappingActive;
+
                 ScrapLoading = data.Scrap_loading;
                 TappingActive = data.Tapping_active;
                 ActualTilting = data.Actual_tilting;
@@ -339,6 +341,12 @@ namespace Client.ViewModel
                 ElectrodesLowered = data.Electrodes_lowered;
 
                 await RefreshEventsAsync();
+
+                if (wasTapping && !_tappingActive)
+                {
+                    await Task.Delay(1000);
+                    await _proxy.ResetAsync();  
+                }
 
                 IsConnected = true;
                 ConnectionStatus = "Connected";

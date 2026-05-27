@@ -209,9 +209,9 @@
                                                    RadiusX="3" RadiusY="3" Fill="#666666"/>
 
                                         <!-- Sparks at electrode tips -->
-                                        <Ellipse x:Name="Spark1" Canvas.Left="152" Canvas.Top="137" Width="10" Height="10" Fill="#AADD44" Opacity="0"/>
+                                        <Ellipse x:Name="Spark1" Canvas.Left="239" Canvas.Top="137" Width="10" Height="10" Fill="#AADD44" Opacity="0"/>
                                         <Ellipse x:Name="Spark2" Canvas.Left="275" Canvas.Top="137" Width="10" Height="10" Fill="#AADD44" Opacity="0"/>
-                                        <Ellipse x:Name="Spark3" Canvas.Left="398" Canvas.Top="137" Width="10" Height="10" Fill="#AADD44" Opacity="0"/>
+                                        <Ellipse x:Name="Spark3" Canvas.Left="311" Canvas.Top="137" Width="10" Height="10" Fill="#AADD44" Opacity="0"/>
                                     </Canvas>
 
                                     <!-- Furnace body — centered, rotates around bottom-center -->

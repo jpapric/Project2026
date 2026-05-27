@@ -17,10 +17,11 @@ namespace Client.Views
 
         private double _sparkPhase = 0;
         private double _electrodeCurrentY = 10;
+        private bool _sliderReset = false;
 
         private const double ElRestY = -5;
         private const double ElActiveY = 90.0;
-        private const double ElHeight = 110.0;
+        private const double ElHeight = 100.0;
         private const double MaxFillH = 173.0;
         private const double MaxEnergy = 500.0;
 
@@ -48,6 +49,21 @@ namespace Client.Views
             DrawMaterialFill();
             DrawLeds();
             DrawAlarmBanners();
+            TapAngleLabel.Text = $"{TapSlider.Value:F1}°";
+
+
+            if (!_vm.TappingActive && TapSlider.Value != 0 && !_sliderReset)
+            {
+                TapSlider.ValueChanged -= TapSlider_ValueChanged;
+                TapSlider.Value = 0;
+                _vm.TapAngleSetpoint = 0f;
+                TapSlider.ValueChanged += TapSlider_ValueChanged;
+                _sliderReset = true;
+            }
+            if (_vm.TappingActive)
+                _sliderReset = false;
+
+
             CurrentTimeText.Text = DateTime.Now.ToString("HH:mm:ss");
             CurrentDateText.Text = DateTime.Now.ToString("dd.MM.yyyy");
         }
@@ -67,7 +83,7 @@ namespace Client.Views
 
             double targetY = lowered ? ElActiveY : ElRestY;  
 
-            _electrodeCurrentY += (targetY - _electrodeCurrentY) * 0.08;
+            _electrodeCurrentY += (targetY - _electrodeCurrentY) * 0.25;
             if (Math.Abs(_electrodeCurrentY - targetY) < 0.1)
                 _electrodeCurrentY = targetY;
 
