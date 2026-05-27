@@ -62,8 +62,10 @@ namespace Client.Views
 
         private void DrawElectrodes()
         {
+            bool lowered = _vm.ElectrodesLowered;
             bool melting = _vm.ActualCurrent > 0;
-            double targetY = melting ? ElActiveY : ElRestY;
+
+            double targetY = lowered ? ElActiveY : ElRestY;  
 
             _electrodeCurrentY += (targetY - _electrodeCurrentY) * 0.08;
             if (Math.Abs(_electrodeCurrentY - targetY) < 0.1)
@@ -73,14 +75,12 @@ namespace Client.Views
 
             Canvas.SetTop(Electrode1, _electrodeCurrentY);
             Canvas.SetTop(Spark1, sparkY);
-
             Canvas.SetTop(Electrode2, _electrodeCurrentY);
             Canvas.SetTop(Spark2, sparkY);
-
             Canvas.SetTop(Electrode3, _electrodeCurrentY);
             Canvas.SetTop(Spark3, sparkY);
 
-            if (melting)
+            if (melting && lowered)
             {
                 Spark1.Opacity = (Math.Sin(_sparkPhase + 0.00) + 1.0) / 2.0;
                 Spark2.Opacity = (Math.Sin(_sparkPhase + 2.09) + 1.0) / 2.0;

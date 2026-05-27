@@ -385,7 +385,7 @@
                                         Background="#CC5500"
                                         Click="TapBtn_Click"/>
 
-                                <Grid Margin="0,0,0,16">
+                                <Grid Margin="0 0 0 10">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="8"/>
@@ -400,7 +400,7 @@
                                     
                                     <Button x:Name="ElectrodeUpBtn" Grid.Column="2"
                                             Content="ELECTRODES UP"
-                                            Height="46" Background="#333333" Foreground="#AAAAAA"
+                                            Height="46" Background="#333333" Foreground="#AADD44"
                                             FontWeight="Bold" FontSize="11" BorderBrush="{x:Null}"
                                             Click="ElectrodeUpBtn_Click"/>
                                 
@@ -510,14 +510,14 @@
                             <Border Margin="0,0,8,0" Background="#1E1E1E" CornerRadius="6" Padding="14,10">
                                 <StackPanel>
                                     <TextBlock Text="TOTAL EVENTS" Foreground="#777" FontSize="10" FontWeight="SemiBold"/>
-                                    <TextBlock x:Name="HistTotalEvents" Text="0" Foreground="#00BFFF"
+                                    <TextBlock x:Name="HistTotalEvents" Text="{Binding Events.Count}" Foreground="#00BFFF"
                                                 FontSize="22" FontWeight="Bold" Margin="0,4,0,0"/>
                                 </StackPanel>
                             </Border>
                             <Border Margin="4,0" Background="#1E1E1E" CornerRadius="6" Padding="14,10">
                                 <StackPanel>
                                     <TextBlock Text="ALARMS" Foreground="#777" FontSize="10" FontWeight="SemiBold"/>
-                                    <TextBlock x:Name="HistAlarmCount" Text="0" Foreground="#FF4444"
+                                    <TextBlock x:Name="HistAlarmCount" Text="{Binding Alarms.Count}" Foreground="#FF4444"
                                FontSize="22" FontWeight="Bold" Margin="0,4,0,0"/>
                                 </StackPanel>
                             </Border>
@@ -578,50 +578,13 @@
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="ACTIVE ALARMS" Foreground="White"
+                                <TextBlock Text="ALARMS" Foreground="White"
                                             FontSize="24" FontWeight="Bold"/>
-                                <Border x:Name="AlarmCountBadge"
-                                        Background="#CC2222" CornerRadius="10"
-                                        Padding="8,2" Margin="12,0,0,0" VerticalAlignment="Center">
-                                    <TextBlock x:Name="AlarmCountText" Text="0"
-                                                Foreground="White" FontSize="12" FontWeight="Bold"/>
-                                </Border>
                             </StackPanel>
-                            <Button x:Name="AckAllBtn" Grid.Column="1"
-                                    Content="ACK ALL" Height="34" Padding="16,0"
-                                    Background="#7A1A1A" Foreground="White"
-                                    FontWeight="Bold" FontSize="11" BorderBrush="{x:Null}"
-                                    />
                         </Grid>
 
-                        <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,16">
-                            <Border Margin="0,0,8,0" Background="#2A0A0A" BorderBrush="#CC2222"
-                                    BorderThickness="0,0,0,2" CornerRadius="6" Padding="14,10">
-                                <StackPanel>
-                                    <TextBlock Text="OVERFILL" Foreground="#777" FontSize="10" FontWeight="SemiBold"/>
-                                    <Ellipse x:Name="AlarmLedOverfill" Width="14" Height="14"
-                                            Fill="#444444" Margin="0,6,0,0" HorizontalAlignment="Left"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Margin="4,0" Background="#2A0A0A" BorderBrush="#CC2222"
-                                        BorderThickness="0,0,0,2" CornerRadius="6" Padding="14,10">
-                                <StackPanel>
-                                    <TextBlock Text="OVERTEMPERATURE" Foreground="#777" FontSize="10" FontWeight="SemiBold"/>
-                                    <Ellipse x:Name="AlarmLedOvertemp" Width="14" Height="14"
-                                             Fill="#444444" Margin="0,6,0,0" HorizontalAlignment="Left"/>
-                                </StackPanel>
-                            </Border>
-                            <Border Margin="8,0,0,0" Background="#2A0A0A" BorderBrush="#CC2222"
-                                    BorderThickness="0,0,0,2" CornerRadius="6" Padding="14,10">
-                                <StackPanel>
-                                    <TextBlock Text="TAPPING ERROR" Foreground="#777" FontSize="10" FontWeight="SemiBold"/>
-                                    <Ellipse x:Name="AlarmLedTapError" Width="14" Height="14"
-                                                Fill="#444444" Margin="0,6,0,0" HorizontalAlignment="Left"/>
-                                </StackPanel>
-                            </Border>
-                        </UniformGrid>
-
                         <DataGrid x:Name="AlarmGrid" Grid.Row="2"
+                                  ItemsSource="{Binding Alarms}"
                                   Background="#1E1E1E" Foreground="White"
                                   BorderBrush="#333" RowBackground="#1E1E1E"
                                   AlternatingRowBackground="#2A0A0A"
@@ -640,14 +603,10 @@
                                 </Style>
                             </DataGrid.ColumnHeaderStyle>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="TIME" Width="170"
-                                    Binding="{Binding Timestamp, StringFormat=dd.MM.yyyy HH:mm:ss}"/>
-                                <DataGridTextColumn Header="ALARM" Width="200"
-                                    Binding="{Binding AlarmName}"/>
-                                <DataGridTextColumn Header="DESCRIPTION" Width="*"
-                                    Binding="{Binding Description}"/>
-                                <DataGridTextColumn Header="STATUS" Width="110"
-                                    Binding="{Binding Status}"/>
+                                <DataGridTextColumn Header="TIME"        Width="170"
+                                                    Binding="{Binding Time, StringFormat=dd.MM.yyyy HH:mm:ss}"/>
+                                <DataGridTextColumn Header="ALARM"       Width="200"
+                                                    Binding="{Binding Name}"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </Grid>
@@ -689,14 +648,6 @@
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-
-                    <ToggleButton Content="AUTO"
-                                  Width="90"
-                                  Height="36"
-                                  Margin="0,0,20,0"
-                                  Background="#00BFFF"
-                                  Foreground="White"
-                                  FontWeight="Bold"/>
 
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock HorizontalAlignment="Right" 

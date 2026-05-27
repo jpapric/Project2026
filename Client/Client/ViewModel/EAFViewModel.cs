@@ -41,6 +41,7 @@ namespace Client.ViewModel
         private bool _tappingError;
         private bool _furnaceEmpty;
         private bool _furnaceOvertemperature;
+        private bool _electrodesLowered;
 
         private bool _manuallyDisconnected = false;
 
@@ -168,6 +169,12 @@ namespace Client.ViewModel
             }
         }
 
+        public bool ElectrodesLowered
+        {
+            get => _electrodesLowered;
+            set { _electrodesLowered = value; OnPropertyChanged(); }
+        }
+
         #endregion
 
         #region Setpoints
@@ -238,6 +245,14 @@ namespace Client.ViewModel
         {
             get => _events;
             set { _events = value; OnPropertyChanged(); }
+        }
+
+        private ObservableCollection<EventDto> _alarms = new ObservableCollection<EventDto>();
+
+        public ObservableCollection<EventDto> Alarms
+        {
+            get => _alarms;
+            set { _alarms = value; OnPropertyChanged(); }
         }
 
         #endregion
@@ -321,6 +336,7 @@ namespace Client.ViewModel
                 TappingError = data.Tapping_error;
                 FurnaceEmpty = data.Furnace_empty;
                 FurnaceOvertemperature = data.Furnace_overtemperature;
+                ElectrodesLowered = data.Electrodes_lowered;
 
                 await RefreshEventsAsync();
 
@@ -341,8 +357,10 @@ namespace Client.ViewModel
                 if (events == null) return;
 
                 Events = new ObservableCollection<EventDto>(events);
-               
-                lastEvent = Events.First();
+                Alarms = new ObservableCollection<EventDto>(
+                    events.Where(e => e.Type == "Warning"));
+
+                lastEvent = Events.FirstOrDefault();
                 OnPropertyChanged(nameof(LastEventText));
                 OnPropertyChanged(nameof(LastEventTime));
             }

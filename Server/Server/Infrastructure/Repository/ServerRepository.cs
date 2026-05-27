@@ -174,6 +174,7 @@ namespace Server.Infrastructure.Repository
 
             connection.Close();
         }
+
         public async Task LiftElectrodes()
         {
             string query = "UPDATE L2_TO_PLC SET ELECTRODES = @Electrodes";
@@ -183,10 +184,12 @@ namespace Server.Infrastructure.Repository
 
             command.Parameters.AddWithValue("@Electrodes", false);
             _plcConnection.WriteBool("electrodes", false);
-            connection.Open();
-            command.ExecuteNonQuery();
+
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
             connection.Close();
         }
+
         public async Task DropElectrodes()
         {
             string query = "UPDATE L2_TO_PLC SET ELECTRODES = @Electrodes";
@@ -196,8 +199,9 @@ namespace Server.Infrastructure.Repository
 
             command.Parameters.AddWithValue("@Electrodes", true);
             _plcConnection.WriteBool("electrodes", true);
-            connection.Open();
-            command.ExecuteNonQuery();
+
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
             connection.Close();
         }
         public async Task Reset()
@@ -377,7 +381,7 @@ namespace Server.Infrastructure.Repository
             {
                 string query = @"SELECT TOP 1 Scrap_loading, Tapping_active, Actual_tilting, 
                                 Material_weight, Actual_current, Energy_consumed, Actual_temperature, 
-                                Furnace_overfill, Tapping_error, Furnace_empty, Furnace_overtemperature
+                                Furnace_overfill, Tapping_error, Furnace_empty, Furnace_overtemperature, Electrodes_lowered, Electrodes_moving
                                 FROM PLC_TO_L2
                                 ORDER BY Id DESC";
 
