@@ -377,7 +377,7 @@ namespace Server.Infrastructure.Repository
             {
                 string query = @"SELECT TOP 1 Scrap_loading, Tapping_active, Actual_tilting, 
                                 Material_weight, Actual_current, Energy_consumed, Actual_temperature, 
-                                Furnace_overfill, Tapping_error, Furnace_empty, Furnace_overtemperature
+                                Furnace_overfill, Tapping_error, Furnace_empty, Furnace_overtemperature,Electrodes_lowered,Electrodes_moving
                                 FROM PLC_TO_L2
                                 ORDER BY Id DESC";
 
@@ -422,6 +422,15 @@ namespace Server.Infrastructure.Repository
                     PostEvent("Furnace overheated", "Warning", DateTime.Now);
                 else if (previous.Furnace_overtemperature && !current.Furnace_overtemperature)
                     PostEvent("Furnace overtemperature resolved", "Feedback", DateTime.Now);
+
+                if (!previous.Electrodes_moving && current.Electrodes_moving)
+                    PostEvent("Electrodes lowering", "Feedback", DateTime.Now);
+
+                if (!previous.Electrodes_lowered && current.Electrodes_lowered)
+                    PostEvent("Electrodes are down", "Feedback", DateTime.Now);
+                else if (previous.Electrodes_lowered && !current.Electrodes_lowered)
+                    PostEvent("Electrodes are up", "Feedback", DateTime.Now);
+
             }
             catch (Exception ex)
             {
