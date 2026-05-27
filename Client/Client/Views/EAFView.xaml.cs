@@ -17,6 +17,7 @@ namespace Client.Views
 
         private double _sparkPhase = 0;
         private double _electrodeCurrentY = 10;
+        private bool _angleReset = false; 
 
         private const double ElRestY = -5;
         private const double ElActiveY = 90.0;
@@ -50,6 +51,22 @@ namespace Client.Views
             DrawAlarmBanners();
             TapAngleLabel.Text = $"{TapSlider.Value:F1}°";
 
+            bool furnaceUpright = Math.Abs(_vm.ActualTilting) < 0.5f;
+
+            TapSlider.IsEnabled = _vm.TappingActive || furnaceUpright;
+
+            if (_vm.TappingActive)
+                _angleReset = false; 
+
+            if (!_vm.TappingActive && furnaceUpright && TapSlider.Value != 0 && !_angleReset)
+            {
+                TapSlider.ValueChanged -= TapSlider_ValueChanged;
+                TapSlider.Value = 0;
+                _vm.TapAngleSetpoint = 0f;
+                TapSlider.ValueChanged += TapSlider_ValueChanged;
+                _angleReset = true;  
+            }
+
             CurrentTimeText.Text = DateTime.Now.ToString("HH:mm:ss");
             CurrentDateText.Text = DateTime.Now.ToString("dd.MM.yyyy");
         }
@@ -73,7 +90,7 @@ namespace Client.Views
             if (Math.Abs(_electrodeCurrentY - targetY) < 0.1)
                 _electrodeCurrentY = targetY;
 
-            double sparkY = _electrodeCurrentY + ElHeight + 2;
+            double sparkY = _electrodeCurrentY + ElHeight - 5;
 
             Canvas.SetTop(Electrode1, _electrodeCurrentY);
             Canvas.SetTop(Spark1, sparkY);
@@ -82,11 +99,11 @@ namespace Client.Views
             Canvas.SetTop(Electrode3, _electrodeCurrentY);
             Canvas.SetTop(Spark3, sparkY);
 
-            if (melting && lowered)
+            if (melting)
             {
-                Spark1.Opacity = (Math.Sin(_sparkPhase + 0.00) + 1.0) / 2.0;
-                Spark2.Opacity = (Math.Sin(_sparkPhase + 2.09) + 1.0) / 2.0;
-                Spark3.Opacity = (Math.Sin(_sparkPhase + 4.18) + 1.0) / 2.0;
+                Spark1.Opacity = 0.4 + (Math.Sin(_sparkPhase + 0.00) + 1.0) / 4.0;
+                Spark2.Opacity = 0.4 + (Math.Sin(_sparkPhase + 2.09) + 1.0) / 4.0;
+                Spark3.Opacity = 0.4 + (Math.Sin(_sparkPhase + 4.18) + 1.0) / 4.0;
             }
             else
             {
@@ -94,6 +111,7 @@ namespace Client.Views
                 Spark2.Opacity = 0;
                 Spark3.Opacity = 0;
             }
+
         }
 
         private void DrawFurnaceTilt()
@@ -197,8 +215,11 @@ namespace Client.Views
         private void TapSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (TapAngleLabel == null) return;
-            TapAngleLabel.Text = $"{TapSlider.Value:F1}°";
             _vm.TapAngleSetpoint = (float)TapSlider.Value;
+        }
+
+        private void TapSlider_MouseUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
             _vm.SetAngleCommand.Execute(null);
         }
 

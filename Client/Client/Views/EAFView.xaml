@@ -187,79 +187,69 @@
                             <Viewbox Stretch="Uniform">
                                 <Grid Width="560" Height="360">
 
-                                    <!-- Electrode canvas — electrodes sit here, animated via code-behind -->
+                                    <!-- Electrodes -->
                                     <Canvas x:Name="FurnaceCanvas" Width="560" Height="360">
-
-                                        <!-- Electrode 1 -->
                                         <Rectangle x:Name="Electrode1"
                                                    Canvas.Left="235" Canvas.Top="10"
                                                    Width="18" Height="100"
                                                    RadiusX="3" RadiusY="3" Fill="#666666"/>
-
-                                        <!-- Electrode 2 -->
                                         <Rectangle x:Name="Electrode2"
                                                    Canvas.Left="271" Canvas.Top="10"
                                                    Width="18" Height="97"
                                                    RadiusX="3" RadiusY="3" Fill="#666666"/>
-
-                                        <!-- Electrode 3 -->
                                         <Rectangle x:Name="Electrode3"
                                                    Canvas.Left="307" Canvas.Top="10"
                                                    Width="18" Height="100"
                                                    RadiusX="3" RadiusY="3" Fill="#666666"/>
-
-                                        <!-- Sparks at electrode tips -->
-                                        <Ellipse x:Name="Spark1" Canvas.Left="239" Canvas.Top="137" Width="10" Height="10" Fill="#AADD44" Opacity="0"/>
-                                        <Ellipse x:Name="Spark2" Canvas.Left="275" Canvas.Top="137" Width="10" Height="10" Fill="#AADD44" Opacity="0"/>
-                                        <Ellipse x:Name="Spark3" Canvas.Left="311" Canvas.Top="137" Width="10" Height="10" Fill="#AADD44" Opacity="0"/>
                                     </Canvas>
 
-                                    <!-- Furnace body — centered, rotates around bottom-center -->
+                                    <!-- Furnace body -->
                                     <Canvas x:Name="FurnaceBody"
-                                            Width="420" Height="200"
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            Margin="0,60,0,0">
+                                                Width="420" Height="200"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Margin="0,60,0,0">
                                         <Canvas.RenderTransformOrigin>0.5,1.0</Canvas.RenderTransformOrigin>
                                         <Canvas.RenderTransform>
                                             <RotateTransform x:Name="FurnaceTilt" Angle="0"/>
                                         </Canvas.RenderTransform>
 
-                                        <!-- Shell outline — flat bottom -->
-
                                         <Path Fill="#2A2A2A" Stroke="#666666" StrokeThickness="2.5">
                                             <Path.Data>
                                                 <PathGeometry>
                                                     <PathFigure StartPoint="20,22" IsClosed="True">
-                                                        <!-- Top left arc start to top right arc end -->
                                                         <ArcSegment Point="400,22" Size="210,30" SweepDirection="Clockwise"/>
-                                                        <!-- Right side — straight down -->
                                                         <LineSegment Point="400,195"/>
-                                                        <!-- Flat bottom -->
                                                         <LineSegment Point="20,195"/>
-                                                        <!-- Left side — straight up -->
                                                         <LineSegment Point="20,22"/>
                                                     </PathFigure>
                                                 </PathGeometry>
                                             </Path.Data>
                                         </Path>
 
-                                        <!-- Material fill -->
-                                        <Polygon x:Name="MaterialFill"
-                                                    Fill="#CC4400" Opacity="0"/>
+                                        <Polygon x:Name="MaterialFill" Fill="#CC4400" Opacity="0"/>
 
-                                        <!-- Weight text overlay -->
                                         <TextBlock x:Name="WeightOverlay"
                                                    Canvas.Left="155" Canvas.Top="158"
                                                    Text="0.0 T  |  0%"
-                                                   Foreground="#FFB080" FontSize="14" FontWeight="SemiBold"/>
+                                                   Foreground="#FFB080" FontSize="14" FontWeight="SemiBold"/>           
 
-                                        <!-- Tap spout -->
                                         <Rectangle Canvas.Left="380" Canvas.Top="190"
                                                    Width="20" Height="40"
                                                    Fill="#444444" Stroke="#666666" StrokeThickness="1"
                                                    RadiusX="2" RadiusY="2"/>
                                     </Canvas>
+
+                                    <!-- Sparks on top of everything -->
+                                    <Canvas Width="560" Height="360">
+                                        <Ellipse x:Name="Spark1" Canvas.Left="236" Canvas.Top="100"
+                                                 Width="16" Height="16" Fill="#FFFF00" Opacity="0"/>
+                                        <Ellipse x:Name="Spark2" Canvas.Left="272" Canvas.Top="100"
+                                                 Width="16" Height="16" Fill="#FFFF00" Opacity="0"/>
+                                        <Ellipse x:Name="Spark3" Canvas.Left="308" Canvas.Top="100"
+                                                Width="16" Height="16" Fill="#FFFF00" Opacity="0"/>
+                                    </Canvas>
+
                                 </Grid>
                             </Viewbox>
                         </Border>
@@ -343,7 +333,8 @@
                                     <Slider x:Name="TapSlider" Minimum="0" Maximum="15"
                                             Value="0" Foreground="#00E5A0"
                                             VerticalAlignment="Center"
-                                            ValueChanged="TapSlider_ValueChanged"/>
+                                            ValueChanged="TapSlider_ValueChanged"
+                                            PreviewMouseLeftButtonUp="TapSlider_MouseUp"/>
                                     <TextBlock x:Name="TapAngleLabel" Grid.Column="1"
                                                Text="0.0°" Foreground="#00E5A0"
                                                FontSize="12" VerticalAlignment="Center"

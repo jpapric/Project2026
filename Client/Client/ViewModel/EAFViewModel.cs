@@ -325,8 +325,6 @@ namespace Client.ViewModel
                     return;
                 }
 
-                bool wasTapping = _tappingActive;
-
                 ScrapLoading = data.Scrap_loading;
                 TappingActive = data.Tapping_active;
                 ActualTilting = data.Actual_tilting;
